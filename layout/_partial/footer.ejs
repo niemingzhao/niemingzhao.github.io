@@ -1,0 +1,48 @@
+<footer id="footer" class="mdui-m-t-5 mdui-p-y-3 mdui-color-theme">
+  <div class="mdui-p-y-0 mdui-text-center">
+    <% if (theme.sns.twitter) { %>
+      <a href="<%- theme.sns.twitter %>" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe655;</i></a>
+    <% } %>
+    <% if (theme.sns.facebook) { %>
+      <a href="<%- theme.sns.facebook %>" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe66e;</i></a>
+    <% } %>
+    <% if (theme.sns.google_plus) { %>
+      <a href="<%- theme.sns.google_plus %>" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe6a8;</i></a>
+    <% } %>
+    <% if (theme.sns.weibo) { %>
+      <a href="<%- theme.sns.weibo %>" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xec7e;</i></a>
+    <% } %>
+    <% if (theme.sns.instagram) { %>
+      <a href="<%- theme.sns.instagram %>" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe75f;</i></a>
+    <% } %>
+    <% if (theme.sns.tumblr) { %>
+      <a href="<%- theme.sns.tumblr %>" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe849;</i></a>
+    <% } %>
+    <% if (theme.sns.github) { %>
+      <a href="<%- theme.sns.github %>" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe7ab;</i></a>
+    <% } %>
+    <% if (theme.sns.linkedin) { %>
+      <a href="<%- theme.sns.linkedin %>" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe666;</i></a>
+    <% } %>
+    <% if (theme.sns.zhihu) { %>
+      <a href="<%- theme.sns.zhihu %>" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe6c0;</i></a>
+    <% } %>
+    <% if (theme.sns.douban) { %>
+      <a href="<%- theme.sns.douban %>" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe667;</i></a>
+    <% } %>
+    <% if (theme.sns.qq) { %>
+      <a href="<%- theme.sns.qq %>" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe651;</i></a>
+    <% } %>
+    <% if (theme.sns.wechat) { %>
+      <a href="<%- theme.sns.wechat %>" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe6e1;</i></a>
+    <% } %>
+  </div>
+  <div class="mdui-p-y-1 mdui-text-center">
+    Copyright &copy; <% if (theme.since) { %><%= theme.since %> - <% } %><%- date(new Date(), 'YYYY') %> <%= config.author || config.title %><br>
+    Powered by <a href="https://hexo.io/" target="_blank" class="mdui-text-color-theme-accent">Hexo</a><% if (theme.footer_text) { %><%- theme.footer_text %><% } %>
+    <% if (theme.busuanzi.site) { %><br>
+      <span id="busuanzi_container_site_pv" style="display: none;"><i class="iconfont">&#xe7fd;</i> <span id="busuanzi_value_site_pv"></span></span> &nbsp;&nbsp;
+      <span id="busuanzi_container_site_uv" style="display: none;"><i class="iconfont">&#xe601;</i> <span id="busuanzi_value_site_uv"></span></span>
+    <% } %>
+  </div>
+</footer>

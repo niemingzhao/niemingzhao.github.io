@@ -1,0 +1,97 @@
+<aside id="sidebar" class="mdui-drawer mdui-drawer-full-height">
+  <script>var a=localStorage.getItem("mdui-drawer-close");if(a){document.getElementById("sidebar").className+=" mdui-drawer-close"};</script>
+  <div class="mdui-grid-tile">
+    <% if (theme.banner) { %><img src="<%- url_for(theme.banner) %>" style="height: 160px;"><% } %>
+    <% if (theme.avatar) { %><img src="<%- url_for(theme.avatar) %>" class="avatar-animation" style="position: absolute; top: 10%; left: 24px; width: 64px; height: 64px; border: 2px solid #fff; border-radius: 50%;"><% } %>
+    <div class="mdui-grid-tile-actions">
+      <div class="mdui-grid-tile-text">
+        <div class="mdui-grid-tile-title"><%= config.author %></div>
+        <div class="mdui-grid-tile-subtitle"><i class="mdui-icon material-icons">art_track</i><%= config.subtitle %></div>
+      </div>
+      <% if (theme.email) { %>
+        <div class="mdui-grid-tile-buttons">
+          <a href="mailto:<%= theme.email %>" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: '<%= theme.email %>'}"><i class="mdui-icon material-icons">email</i></a>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="mdui-list" mdui-collapse="{accordion: true}">
+    <a href="<%- url_for() %>" class="mdui-list-item mdui-ripple">
+      <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-blue">home</i>
+      <div class="mdui-list-item-content"><%= __('home') %></div>
+    </a>
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-0");if(a){document.getElementsByClassName("mdui-collapse-item")[0].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-deep-orange">archive</i>
+        <div class="mdui-list-item-content"><%= __('archive') %></div>
+        <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        <% var archives = list_archives({style: 'none', separator: '', class: 'mdui-ripple sidebar_archives'}) %>
+        <%- archives %>
+        <% if (!archives) { %>
+          <a href="javascript:;" class="mdui-list-item mdui-p-l-2 mdui-text-color-theme mdui-ripple" style="justify-content: center;"><%= __('no_archive') %></a>
+        <% } %>
+      </div>
+    </div>
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-1");if(a){document.getElementsByClassName("mdui-collapse-item")[1].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-green">class</i>
+        <div class="mdui-list-item-content"><%= __('category') %></div>
+        <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        <% var categories = list_categories({style: 'none', separator: '', class: 'mdui-ripple sidebar_archives'}) %>
+        <%- categories %>
+        <% if (!categories) { %>
+          <a href="javascript:;" class="mdui-list-item mdui-p-l-2 mdui-text-color-theme mdui-ripple" style="justify-content: center;"><%= __('no_category') %></a>
+        <% } %>
+      </div>
+    </div>
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-2");if(a){document.getElementsByClassName("mdui-collapse-item")[2].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-brown">bookmark</i>
+        <div class="mdui-list-item-content"><%= __('tag') %></div>
+        <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        <% var tags = list_tags({style: 'none', separator: '', class: {a: 'mdui-ripple sidebar_archives-link', count: 'mdui-ripple sidebar_archives-count'}}) %>
+        <%- tags %>
+        <% if (!tags) { %>
+          <a href="javascript:;" class="mdui-list-item mdui-p-l-2 mdui-text-color-theme mdui-ripple" style="justify-content: center;"><%= __('no_tag') %></a>
+        <% } %>
+      </div>
+    </div>
+    <a href="<%- url_for('/about') %>" class="mdui-list-item mdui-ripple">
+      <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-purple">person</i>
+      <div class="mdui-list-item-content"><%= __('about') %></div>
+    </a>
+  </div>
+
+  <div class="mdui-divider"></div>
+
+  <div class="mdui-list" mdui-collapse="{accordion: true}">
+    <% for (var i in theme.pages) { %>
+      <a href="<%- url_for(theme.pages[i].link) %>" class="mdui-list-item mdui-ripple"><%= theme.pages[i].name %></a>
+    <% } %>
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-3");if(a){document.getElementsByClassName("mdui-collapse-item")[3].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <div class="mdui-list-item-content"><%= __('links') %></div>
+        <i class="mdui-list-item-icon mdui-icon material-icons">link</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        <% for (var i in theme.links) { %>
+          <a href="<%- theme.links[i].link %>" target="_blank" class="mdui-list-item mdui-p-l-2 mdui-text-color-theme-accent mdui-ripple" style="justify-content: center;"><%= theme.links[i].name %></a>
+        <% } %>
+        <% if (!theme.links || !theme.links.length) { %>
+          <a href="javascript:;" class="mdui-list-item mdui-p-l-2 mdui-text-color-theme mdui-ripple" style="justify-content: center;"><%= __('no_links') %></a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</aside>

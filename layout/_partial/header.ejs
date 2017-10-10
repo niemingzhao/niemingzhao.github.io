@@ -1,0 +1,20 @@
+<header id="header" class="mdui-appbar mdui-appbar-fixed mdui-appbar-scroll-hide mdui-appbar-inset">
+  <div class="mdui-toolbar mdui-color-theme">
+    <a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-drawer="{target: '#sidebar', swipe: true}"><i class="mdui-icon material-icons">menu</i></a>
+    <a href="<%- url_for() %>" class="mdui-typo-headline"><%= config.title %></a>
+    <div class="mdui-toolbar-spacer"></div>
+    <a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-dialog="{target: '#search'}" mdui-tooltip="{content: '<%= __('search') %>'}"><i class="mdui-icon material-icons">search</i></a>
+    <% if (theme.rss) { %><a href="<%- url_for(theme.rss) %>" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: '<%= __('rss_feed') %>'}"><i class="mdui-icon material-icons">rss_feed</i></a><% } %>
+  </div>
+</header>
+<div class="mdui-dialog" id="search">
+  <% if (theme.search.use === 'plugin') { %>
+    <div class="search-form">
+      <input type="search" class="search-form-input" placeholder="<%= theme.search.placeholder %>">
+    </div>
+    <div class="search-result" data-resource="<%- url_for(theme.search.path) %>"></div>
+  <% } else { %>
+    <%- search_form({class: 'search-form', text: theme.search.placeholder, button: false}) %>
+    <div class="search-result"></div>
+  <% } %>
+</div>

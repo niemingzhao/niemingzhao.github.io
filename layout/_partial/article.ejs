@@ -1,0 +1,188 @@
+<% if (page.photos && page.photos.length) { %>
+  <%- css(theme.gallery.fancybox_css) %>
+  <article class="mdui-row-xs-2 mdui-row-sm-3 mdui-row-md-4 mdui-row-lg-5 mdui-row-xl-6 mdui-grid-list" style="margin: 0 auto;">
+    <% page.photos.forEach(function (photo) { %>
+      <div class="mdui-col">
+        <div class="mdui-grid-tile mdui-hoverable">
+          <a data-fancybox="gallery" href="<%- url_for(photo) %>">
+            <img src="/images/grey.png" class="lazyload" data-original="<%- url_for(photo) %>" style="height: 160px; border-radius: 2px;">
+          </a>
+        </div>
+      </div>
+    <% }) %>
+  </article>
+  <%- js([theme.gallery.jquery_js, theme.gallery.lazyload_js, theme.gallery.fancybox_js]) %>
+  <script>$("#main article img.lazyload").lazyload({effect:"fadeIn"});</script>
+<% } else if (page.timeline && site.posts.length) { %>
+  <style>
+    #timeline{max-width:750px;margin:0 auto;padding:0 8px}
+    #timeline h2{margin:.6em 0}
+    #timeline a{position:relative;display:-webkit-box;display:-ms-flexbox;display:flex;padding:8px 0;text-decoration:none;color:inherit;word-break:break-word;-webkit-transition:all .28s ease;transition:all .28s ease}
+    #timeline a:before{content:'';position:absolute;top:0;left:24px;z-index:1;width:2px;height:8px;background:#9c27b0}
+    #timeline a:after{content:'';position:absolute;top:24px;left:24px;z-index:1;width:2px;height:calc(100% - 24px);background:#9c27b0}
+    #timeline a span:first-child{-ms-flex-negative:0;flex-shrink:0;width:64px;margin-left:48px}
+    #timeline a span:first-child:before{content:'';position:absolute;top:8px;left:17px;z-index:2;width:16px;height:16px;border-radius:8px;background:#9c27b0;-webkit-transform:scale(.5);transform:scale(.5);-webkit-transition:all .28s ease;transition:all .28s ease}
+    #timeline a:hover{background-color:rgba(0,0,0,.1)}
+    .mdui-theme-layout-dark #timeline a:hover{background-color:rgba(255,255,255,.1)}
+    #timeline a:hover span:first-child:before{-webkit-transform:scale(.8);transform:scale(.8)}
+    #timeline a .mdui-icon{padding-left:8px;font-size:1em;color:#9c27b0;-webkit-transform:scale(1.5);transform:scale(1.5)}
+  </style>
+  <article id="timeline">
+    <% var year = -1 %>
+    <% site.posts.sort('date', -1).each(function(post) { %>
+      <% post.year = date(post.date, 'YYYY') %>
+      <% if (post.year && post.year !== year) { %>
+        <% year = post.year %>
+        <h2><%= year %></h2>
+      <% } %>
+      <a href="<%- url_for(post.link || post.path) %>"<% if (post.link) { %> target="_blank"<% } %>>
+        <span><%= date(post.date, 'MM-DD') %></span>
+        <span><%= post.title %><% if (post.sticky || post.top) { %><i class="mdui-icon material-icons">fiber_pin</i><% } %></span>
+      </a>
+    <% }) %>
+  </article>
+<% } else if (page.tagcloud && site.tags.length) { %>
+  <style>
+    #tagcloud a{margin:0 8px;padding:8px 0;line-height:40px;white-space:nowrap;text-decoration:none;opacity:.87;-webkit-transition:all .2s cubic-bezier(.4,0,.2,1);-o-transition:all .2s cubic-bezier(.4,0,.2,1);transition:all .2s cubic-bezier(.4,0,.2,1)}
+    #tagcloud a:hover{opacity:1;text-shadow:1px 1px 3px #444}
+  </style>
+  <article id="tagcloud" class="mdui-text-center">
+    <%- tagcloud({min_font: 16, max_font: 35, amount: 9999, color: true, start_color: '#3f51b5', end_color: '#ff4081'}) %>
+  </article>
+<% } else if (page.layout === 'custom') { %>
+  <%- page.content %>
+<% } else { %>
+  <%- css(theme.gallery.fancybox_css) %>
+  <style>#main article .mdui-card-content .center-block{display:block!important;margin-right:auto!important;margin-left:auto!important}</style>
+  <style>#main article .mdui-card-content .text-center{text-align:center!important}</style>
+  <article class="mdui-card mdui-m-b-5">
+    <header class="mdui-card-media">
+      <img src="<%- page.thumbnail || '/images/random/material-' + (Math.round(Math.random() * 18) + 1) + '.png' %>" style="max-height: 240px;">
+      <div class="mdui-card-media-covered">
+        <div class="mdui-card-primary">
+          <div class="mdui-card-primary-title"><%= page.title %></div>
+          <div class="mdui-card-primary-subtitle"><i class="iconfont">&#xe697;</i> <%- date(page.date) %> / <i class="iconfont">&#xe601;</i> <%= page.author || config.author %><% if (theme.busuanzi.page) { %> &nbsp;&nbsp; <span id="busuanzi_container_page_pv" style="display: none;"><i class="iconfont">&#xe7fd;</i> <span id="busuanzi_value_page_pv"></span></span><% } %></div>
+        </div>
+      </div>
+      <div class="mdui-card-menu">
+        <% if (page.qrcode !== false) { %>
+          <button class="mdui-btn mdui-btn-icon mdui-text-color-white" mdui-menu="{target: '#qrcode', align: 'right'}"><i class="mdui-icon material-icons">devices</i></button>
+          <ul class="mdui-menu" id="qrcode">
+            <% if (theme.qrcode.caption) { %>
+              <li class="mdui-menu-item"><a class="mdui-text-center mdui-ripple"><%= theme.qrcode.caption %></a></li>
+            <% } %>
+            <li class="mdui-menu-item" disabled>
+              <% if (theme.qrcode.use === 'plugin') { %>
+                <img src="<%- qrcode(page.permalink, {margin: 2}) %>">
+              <% } else { %>
+                <img src="<% if (page.lang === 'zh-CN') { %>//qr.liantu.com/api.php?w=246&m=10&text=<%- page.permalink %><% } else { %>//chart.googleapis.com/chart?cht=qr&chs=246x246&chl=<%- page.permalink %>&chld=M|2<% } %>">
+              <% } %>
+            </li>
+          </ul>
+        <% } %>
+        <% if (page.share_menu !== false) { %>
+          <button class="mdui-btn mdui-btn-icon mdui-text-color-white" mdui-menu="{target: '#share_menu', align: 'right'}"><i class="mdui-icon material-icons">share</i></button>
+          <ul class="mdui-menu" id="share_menu">
+            <li class="mdui-menu-item">
+              <a href="https://service.weibo.com/share/share.php?appkey=&title=<%= page.title %>&url=<%- page.permalink %>&pic=<%- config.url + url_for(theme.favicon) %>&searchPic=false&style=simple" target="_blank" class="mdui-ripple"><%= __('share.weibo') %></a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://twitter.com/intent/tweet?text=<%= page.title %>&url=<%- page.permalink %>&via=<%= config.author %>" target="_blank" class="mdui-ripple"><%= __('share.twitter') %></a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://www.facebook.com/sharer/sharer.php?u=<%- page.permalink %>" target="_blank" class="mdui-ripple"><%= __('share.facebook') %></a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://plus.google.com/share?url=<%- page.permalink %>" target="_blank" class="mdui-ripple"><%= __('share.google_plus') %></a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://www.linkedin.com/shareArticle?mini=true&url=<%- page.permalink %>&title=<%= page.title %>" target="_blank" class="mdui-ripple"><%= __('share.linkedin') %></a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://connect.qq.com/widget/shareqq/index.html?site=<%= config.title %>&title=<%= page.title %>&pics=<%- config.url + url_for(theme.favicon) %>&url=<%- page.permalink %>" target="_blank" class="mdui-ripple"><%= __('share.qq') %></a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://telegram.me/share/url?url=<%- page.permalink %>&text=<%= page.title %>" target="_blank" class="mdui-ripple"><%= __('share.telegram') %></a>
+            </li>
+          </ul>
+        <% } %>
+      </div>
+    </header>
+    <div class="mdui-card-content mdui-typo">
+      <%- page.content %>
+      <% if (is_post() && page.donate !== false && theme.donate && theme.donate.length) { %>
+        <div class="mdui-m-y-2 mdui-text-center">
+          <button class="mdui-fab mdui-color-deep-orange mdui-text-color-white mdui-ripple" mdui-dialog="{target: '#donate'}" mdui-tooltip="{content: '<%= __('donate') %>', position: 'top'}"><i class="mdui-icon material-icons">thumb_up</i></button>
+        </div>
+      <% } %>
+      <blockquote>
+        <% if (page.license) { %>
+          <strong><%- page.license %></strong><br>
+        <% } else if (theme.license && page.license !== false) { %>
+          <strong><%- theme.license %></strong><br>
+        <% } %>
+        <strong><%= __('permalink') %></strong><br><a href="<%- page.permalink %>"><%- decodeURI(page.permalink) %></a>
+      </blockquote>
+    </div>
+    <footer class="mdui-card-actions">
+      <% if (page.categories && page.categories.length) { %>
+        <%- list_categories(page.categories, {show_count: false, style: 'none', separator: '', class: 'mdui-ripple article_categories'}) %>
+      <% } %>
+      <% if (page.tags && page.tags.length) { %>
+        <%- list_tags(page.tags, {show_count: false, style: 'none', separator: '', class: {a: 'mdui-ripple article_tags-link'}}) %>
+      <% } %>
+    </footer>
+    <% if (is_post() && page.donate !== false && theme.donate && theme.donate.length) { %>
+      <div class="mdui-dialog" id="donate">
+        <div class="mdui-tab mdui-tab-centered">
+          <% for (var i in theme.donate) { %>
+            <a href="#donate-<%= i %>" class="mdui-ripple"><%= theme.donate[i].name %></a>
+          <% } %>
+        </div>
+        <% function is_image(str) { var filter = '.jpeg|.gif|.jpg|.png|.bmp|.pic|'; if (str.indexOf('.') > -1) { var pos = str.lastIndexOf('.'); var fix = str.substring(pos, str.length) + '|'; fix = fix.toLowerCase(); if (filter.indexOf(fix) > -1) return true; } return false; } %>
+        <% for (var i in theme.donate) { %>
+          <div id="donate-<%= i %>" class="mdui-p-a-2 mdui-typo mdui-text-center">
+            <% if (is_image(theme.donate[i].link)) { %>
+              <img src="<%- theme.donate[i].link %>" style="width: 300px;">
+            <% } else { %>
+              <a href="<%- theme.donate[i].link %>" target="_blank">>> <%= theme.donate[i].name %></a>
+            <% } %>
+          </div>
+        <% } %>
+      </div>
+    <% } %>
+  </article>
+  <%- js([theme.gallery.jquery_js, theme.gallery.fancybox_js]) %>
+  <script>$("#main article .mdui-card-content img.fancybox").on("click",function(e){$.fancybox.open({src:$(this).attr("src")});});</script>
+<% } %>
+<% if (page.prev || page.next) { %>
+  <nav id="paginator">
+    <% if (page.prev) { %>
+      <a rel="prev" class="extend prev" href="<%- url_for(page.prev.path) %>">
+        <button aria-label="prev" class="mdui-btn mdui-btn-raised mdui-btn-icon mdui-color-theme-accent mdui-ripple"><i class="mdui-icon material-icons">arrow_back</i></button>
+        <span class="mdui-p-x-3" mdui-tooltip="{content: '<%= page.prev.title %>'}"><%= __('prev') %></span>
+      </a>
+    <% } %>
+    <div class="spacer"></div>
+    <% if (page.next) { %>
+      <a rel="next" class="extend next" href="<%- url_for(page.next.path) %>">
+        <span class="mdui-p-x-3" mdui-tooltip="{content: '<%= page.next.title %>'}"><%= __('next') %></span>
+        <button aria-label="next" class="mdui-btn mdui-btn-raised mdui-btn-icon mdui-color-theme-accent mdui-ripple"><i class="mdui-icon material-icons">arrow_forward</i></button>
+      </a>
+    <% } %>
+  </nav>
+<% } %>
+<% if (page.comments && theme.comment.use) { %>
+  <div id="comment" class="mdui-m-t-5">
+    <%- partial('_widget/comment/' + theme.comment.use) %>
+  </div>
+<% } %>
+<% var toc = toc(page.content, {class: 'toc', list_number: false}) %>
+<% if (is_post() && page.toc && toc.length) { %>
+  <div style="position: fixed !important; right: 16px; top: 30%;">
+    <button class="mdui-fab mdui-fab-mini mdui-ripple" mdui-menu="{target: '#toc'}"><i class="mdui-icon material-icons">toc</i></button>
+    <ul class="mdui-menu" id="toc">
+      <li class="mdui-menu-item" disabled><%- toc %></li>
+    </ul>
+  </div>
+<% } %>

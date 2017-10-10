@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="<%= page.lang %>">
+<%- partial('_partial/head') %>
+<body class="mdui-appbar-with-toolbar mdui-theme-primary-<%= theme.theme_color.primary || 'indigo' %> mdui-theme-accent-<%= theme.theme_color.accent || 'pink' %>">
+  <script>var a=localStorage.getItem("mdui-theme-layout-dark");if(a){document.getElementsByTagName("body")[0].className+=" mdui-theme-layout-dark"};</script>
+  <script>if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){document.getElementsByTagName("body")[0].className+=" mdui-theme-layout-dark"};</script>
+  <script>var a=localStorage.getItem("mdui-drawer-close");if(!a){document.getElementsByTagName("body")[0].className+=" mdui-drawer-body-left"};</script>
+  <%- partial('_partial/header', null, {cache: !config.relative_link}) %>
+  <%- partial('_partial/sidebar', null, {cache: !config.relative_link}) %>
+  <main id="main" class="mdui-m-t-5 fadeIn animated"><%- body %></main>
+  <%- partial('_partial/footer', null, {cache: !config.relative_link}) %>
+  <button id="gotop" class="mdui-fab mdui-fab-fixed mdui-fab-hide mdui-color-theme-accent mdui-ripple"><i class="mdui-icon material-icons">arrow_upward</i></button>
+  <% if (theme.busuanzi.site || theme.busuanzi.page) { %><script async src="<%- theme.busuanzi.busuanzi_js %>"></script><% } %>
+  <%- js(['js/mdui', 'js/script']) %>
+  <%- js('custom') %>
+</body>
+</html>

@@ -1,0 +1,25 @@
+home: Home
+archive: Archive
+category: Category
+tag: Tag
+about: About
+links: Links
+rss_feed: RSS
+search: Search
+no_archive: No Archives
+no_category: No Categories
+no_tag: No Tags
+no_links: No Links
+more: Read More
+prev: Prev
+next: Next
+permalink: "PermaLink: "
+share:
+  weibo: Share to Weibo
+  twitter: Share to Twitter
+  facebook: Share to Facebook
+  google_plus: Share to Google+
+  linkedin: Share to LinkedIn
+  qq: Share to QQ
+  telegram: Share to Telegram
+donate: Donate

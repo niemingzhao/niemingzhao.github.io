@@ -1,0 +1,57 @@
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="renderer" content="webkit">
+
+  <%
+    var title = page.title;
+    if (is_archive()) {
+      title = __('archive');
+      if (is_month()) {
+        title += ': ' + page.year + '/' + page.month;
+      } else if (is_year()) {
+        title += ': ' + page.year;
+      }
+    } else if (is_category()) {
+      title = __('category') + ': ' + page.category;
+    } else if (is_tag()) {
+      title = __('tag') + ': ' + page.tag;
+    }
+  %>
+  <title><% if (title) { %><%= title %> | <% } %><%= config.title %></title>
+
+  <% if (theme.favicon) { %><%- favicon_tag(theme.favicon) %><% } %>
+  <% if (theme.rss) { %><%- feed_tag(theme.rss, {title: config.title}) %><% } %>
+  <%- open_graph({twitter_id: theme.open_graph.twitter, google_plus: theme.open_graph.google_plus, fb_admins: theme.open_graph.fb_admins, fb_app_id: theme.open_graph.fb_app_id}) %>
+
+  <meta name="keywords" content="<% if (page.tags && page.tags.each) { page.tags.each(function (tag) { %><%= ',' + tag.name %><% })} else if (config.keywords) { %><%= config.keywords %><% } %>">
+  <meta name="format-detection" content="telephone=no,email=no">
+  <meta name="theme-color" content="#9C27B0">
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="<%= config.title %>">
+  <meta name="msapplication-starturl" content="<%- config.url + url_for(page.path).replace('index.html', '') %>">
+  <meta name="msapplication-navbutton-color" content="#9C27B0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="<%= config.title %>">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="apple-touch-icon" href="<%- url_for(theme.favicon) %>">
+
+  <% if (page.current === 1 && is_home()) { %>
+    <link rel="canonical" href="<%- config.url %>">
+  <% } else { %>
+    <link rel="canonical" href="<%- config.url + url_for(page.path) %>">
+  <% } %>
+
+  <% if (theme.site_verification.google) { %><meta name="google-site-verification" content="<%= theme.site_verification.google %>"><% } %>
+  <% if (theme.site_verification.baidu) { %><meta name="baidu-site-verification" content="<%= theme.site_verification.baidu %>"><% } %>
+
+  <% if (theme.analytics.google_site_id) { %><%- partial('_widget/analytics/google-analytics') %><% } %>
+  <% if (theme.analytics.baidu_site_id) { %><%- partial('_widget/analytics/baidu-analytics') %><% } %>
+  <% if (theme.analytics.cnzz_site_id) { %><%- partial('_widget/analytics/cnzz-analytics') %><% } %>
+
+  <%- css(['css/mdui', 'css/style']) %>
+  <%- css('custom') %>
+</head>

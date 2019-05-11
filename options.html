@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <title>七牛云图床 | 配置项</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+
+<body>
+  <div class="center-block" style="width: 50%;">
+    <header>
+      <h1>七牛云图床 <small>配置</small></h1>
+      <p>请确保按照要求填写正确的内容</p>
+    </header>
+    <form>
+      <div class="form-group">
+        <label for="ak">AK</label>
+        <input type="text" id="ak" name="ak" class="form-control">
+        <span class="help-block">访问 <a href="https://portal.qiniu.com/user/key" target="_blank">密钥管理</a> 获取 AK 和 SK
+          。</span>
+      </div>
+      <div class="form-group">
+        <label for="sk">SK</label>
+        <input type="text" id="sk" name="sk" class="form-control">
+        <span class="help-block">访问 <a href="https://portal.qiniu.com/user/key" target="_blank">密钥管理</a> 获取 AK 和 SK
+          。</span>
+      </div>
+      <div class="form-group">
+        <label for="bucket">Bucket</label>
+        <input type="text" id="bucket" name="bucket" class="form-control">
+        <span class="help-block">设置上传的 Bucket 。</span>
+      </div>
+      <div class="form-group">
+        <label for="domain">域名</label>
+        <input type="text" id="domain" name="domain" class="form-control">
+        <span class="help-block">在 <a href="https://portal.qiniu.com/create" target="_blank">控制台</a>
+          的对象存储中可以看到域名。</span>
+      </div>
+      <div class="form-group">
+        <label for="region">存储区域</label>
+        <select id="region" name="region" class="form-control">
+          <option value="https://upload.qiniup.com">华东</option>
+          <option value="https://upload-z1.qiniup.com">华北</option>
+          <option value="https://upload-z2.qiniup.com">华南</option>
+          <option value="https://upload-na0.qiniup.com">北美</option>
+          <option value="https://upload-as0.qiniup.com">东南亚</option>
+        </select>
+        <span class="help-block">在 <a href="https://portal.qiniu.com/create" target="_blank">控制台</a>
+          的对象存储中可以看到存储区域。</span>
+      </div>
+      <div class="form-group">
+        <label for="prefix">文件名规则</label>
+        <input type="text" id="prefix" name="prefix" class="form-control">
+        <span class="help-block">例：image/${date}/${uuid}.${ext}，可用标记包括日期（格式为yyyy/MM/dd）${date}、UUID${uuid}、
+          文件名（含扩展名）${name}、文件扩展名${ext}。</span>
+      </div>
+      <div class="form-group">
+        <button type="button" id="save" class="btn btn-default">保存</button>
+      </div>
+    </form>
+  </div>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/options.js"></script>
+</body>
+
+</html>

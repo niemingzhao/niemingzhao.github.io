@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>七牛云图床</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/webuploader.css">
+</head>
+
+<body>
+  <div class="center-block" style="width: 90%;">
+    <div id="uploader" class="well"
+      style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+      <button type="button" id="pickfiles" class="btn">选择图片</button>
+      <h3>拖放图片到这里上传图片</h3>
+    </div>
+
+    <div id="status" class="alert alert-info" role="alert"></div>
+
+    <label for="link">图片链接</label>
+    <div class="input-group">
+      <input type="text" id="link" name="link" class="form-control">
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-default" data-clipboard-target="#link">复制</button>
+      </span>
+    </div>
+    <label for="markdown">MarkDown</label>
+    <div class="input-group">
+      <input type="text" id="markdown" name="markdown" class="form-control">
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-default" data-clipboard-target="#markdown">复制</button>
+      </span>
+    </div>
+    <label for="a-link">HTML</label>
+    <div class="input-group">
+      <input type="text" id="a-link" name="a-link" class="form-control">
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-default" data-clipboard-target="#a-link">复制</button>
+      </span>
+    </div>
+  </div>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/clipboard.min.js"></script>
+  <script src="js/crypto-js.min.js"></script>
+  <script src="js/webuploader.nolog.min.js"></script>
+  <script src="js/token.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

@@ -6,7 +6,7 @@ author: 聂明照
 categories:
   - 技术
 tags:
-  - Linux
+  - Ubuntu
 toc: true
 sticky: 100
 thumbnail: //images.niemingzhao.top/image/2020/12/20/wu_1elfkitn8je787615os16tlu257.jpg

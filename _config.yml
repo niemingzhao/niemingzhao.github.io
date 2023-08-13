@@ -148,11 +148,11 @@ theme_config:
     - name: 电视直播
       link: /tv
   links:
-    - name: 我的简历
-      link: //images.niemingzhao.top/my_resume.html
+    - name: hao123
+      link: //www.hao123.com
 
   since: 2016
-  footer_text: ' | 鲁ICP备<a href="https://beian.miit.gov.cn" target="_blank" class="mdui-text-color-theme-accent">19009266</a>号-1'
+  footer_text: ' | 京ICP备<a href="https://beian.miit.gov.cn" target="_blank" class="mdui-text-color-theme-accent">2023020255</a>号-1'
   license: 本文遵循 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">CC BY-NC-SA 4.0</a> 许可协议
 
   gallery:

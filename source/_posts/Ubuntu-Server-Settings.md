@@ -8,7 +8,7 @@ categories:
 tags:
   - Ubuntu
 toc: true
-sticky: 100
+sticky: 200
 thumbnail: //images.niemingzhao.top/image/2020/12/20/wu_1elfkitn8je787615os16tlu257.jpg
 ---
 

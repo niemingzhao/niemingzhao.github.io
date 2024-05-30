@@ -148,11 +148,11 @@ theme_config:
     - name: 电视直播
       link: /tv
   links:
-    - name: hao123
-      link: //www.hao123.com
+    - name: 自建服务导航
+      link: //home.niemingzhao.top
 
   since: 2016
-  footer_text: ' | Theme - <a href="https://github.com/niemingzhao/niemingzhao.github.io/tree/theme" target="_blank" class="mdui-text-color-theme-accent">default</a><br><img src="https://www.beian.gov.cn/img/new/gongan.png">京公网安备 <a href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502053272" target="_blank" class="mdui-text-color-theme-accent">11010502053272</a>号 | 京ICP备<a href="https://beian.miit.gov.cn" target="_blank" class="mdui-text-color-theme-accent">2023020255</a>号-1'
+  footer_text: ' | Theme - <a href="https://github.com/niemingzhao/niemingzhao.github.io/tree/theme" target="_blank" class="mdui-text-color-theme-accent">default</a><br>京公网安备<a href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502053272" target="_blank" class="mdui-text-color-theme-accent">11010502053272</a>号 | 京ICP备<a href="https://beian.miit.gov.cn" target="_blank" class="mdui-text-color-theme-accent">2023020255</a>号'
   license: 本文遵循 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">CC BY-NC-SA 4.0</a> 许可协议
 
   gallery:

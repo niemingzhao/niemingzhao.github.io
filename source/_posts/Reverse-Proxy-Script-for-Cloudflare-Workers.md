@@ -8,7 +8,7 @@ categories:
 tags:
   - Cloudflare
 toc: false
-sticky: 200
+sticky: 100
 thumbnail: //images.niemingzhao.top/image/2022/05/25/wu_1g3rhoja8ioo11kmdd81knm11si6.png
 ---
 

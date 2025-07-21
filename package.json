@@ -26,7 +26,7 @@
     "hexo-generator-tag": "^2.0.0",
     "hexo-helper-qrcode": "^1.0.2",
     "hexo-renderer-ejs": "^2.0.0",
-    "hexo-renderer-markdown": "^1.6.3",
+    "hexo-renderer-markdown": "^1.6.5",
     "hexo-server": "^3.0.0"
   }
 }

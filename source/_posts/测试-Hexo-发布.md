@@ -1,7 +1,7 @@
 ---
 title: 测试Hexo发布
 date: '2026-02-08 01:07:31'
-updated: '2026-02-08 01:32:54'
+updated: '2026-02-08 01:39:39'
 permalink: /post/testing-the-hexo-release-z2lxjd5.html
 comments: true
 toc: true

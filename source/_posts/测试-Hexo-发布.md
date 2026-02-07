@@ -1,7 +1,7 @@
 ---
 title: 测试Hexo发布
 date: '2026-02-08 01:07:31'
-updated: '2026-02-08 01:11:11'
+updated: '2026-02-08 01:32:54'
 permalink: /post/testing-the-hexo-release-z2lxjd5.html
 comments: true
 toc: true
@@ -13,7 +13,7 @@ toc: true
 
 测试
 
-![image](assets/image-20260208010913-g4qwao9.png)
+![image](https://images.niemingzhao.top/image/20260208013254.png/-default)
 
 # 测试
 

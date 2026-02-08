@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="renderer" content="webkit">
+
+  
+  <title>为本机Git配置SSH链接 | 聂明照的博客</title>
+
+  <link rel="shortcut icon" href="/images/favicon.jpg">
+  <link rel="alternate" href="/atom.xml" title="聂明照的博客" type="application/atom+xml">
+  <meta name="description" content="访问代码仓库时，需要建立安全链接，对于Git，常用的安全链接协议有HTTPS和SSH两种。HTTPS使用更简单，只需在向仓库提交代码时提供一下用户名和密码即可。但是经常出现需要频繁提供用户名和密码的情况，这个不能忍。相比之下，SSH的方式虽然配置有点难，但一次配置，次次可用，是个更好的方式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="为本机Git配置SSH链接">
+<meta property="og:url" content="https://www.niemingzhao.top/2017/01/07/%E4%B8%BA%E6%9C%AC%E6%9C%BAGit%E9%85%8D%E7%BD%AESSH%E9%93%BE%E6%8E%A5/index.html">
+<meta property="og:site_name" content="聂明照的博客">
+<meta property="og:description" content="访问代码仓库时，需要建立安全链接，对于Git，常用的安全链接协议有HTTPS和SSH两种。HTTPS使用更简单，只需在向仓库提交代码时提供一下用户名和密码即可。但是经常出现需要频繁提供用户名和密码的情况，这个不能忍。相比之下，SSH的方式虽然配置有点难，但一次配置，次次可用，是个更好的方式。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-01-07T12:24:00.000Z">
+<meta property="article:modified_time" content="2026-02-08T11:30:13.900Z">
+<meta property="article:author" content="聂明照">
+<meta property="article:tag" content="Git">
+<meta name="twitter:card" content="summary">
+
+  <meta name="keywords" content=",Git">
+  <meta name="format-detection" content="telephone=no,email=no">
+  <meta name="theme-color" content="#9C27B0">
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="聂明照的博客">
+  <meta name="msapplication-starturl" content="https://www.niemingzhao.top/2017/01/07/%E4%B8%BA%E6%9C%AC%E6%9C%BAGit%E9%85%8D%E7%BD%AESSH%E9%93%BE%E6%8E%A5/">
+  <meta name="msapplication-navbutton-color" content="#9C27B0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="聂明照的博客">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="apple-touch-icon" href="/images/favicon.jpg">
+
+  
+    <link rel="canonical" href="https://www.niemingzhao.top/2017/01/07/%E4%B8%BA%E6%9C%AC%E6%9C%BAGit%E9%85%8D%E7%BD%AESSH%E9%93%BE%E6%8E%A5/">
+  
+
+  <meta name="google-site-verification" content="fXjtlIfaDc_X-0P11rO3bEp1Nk4IKXphoJv0GqGZCco">
+  <meta name="baidu-site-verification" content="I3t1wfwZvd">
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create','UA-139531378-1','auto');ga('send','pageview');
+</script>
+
+  <script>
+  var _hmt = _hmt || [];
+  (function() {var hm = document.createElement('script');
+  hm.src = '//hm.baidu.com/hm.js?22e4d3b73c21ec2f0e1b4f3ff78c9a9c';
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+  
+
+  
+<link rel="stylesheet" href="/css/mdui.css">
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/custom.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="mdui-appbar-with-toolbar mdui-theme-primary-brown mdui-theme-accent-blue">
+  <script>var a=localStorage.getItem("mdui-theme-layout-dark");if(a){document.getElementsByTagName("body")[0].className+=" mdui-theme-layout-dark"};</script>
+  <script>if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){document.getElementsByTagName("body")[0].className+=" mdui-theme-layout-dark"};</script>
+  <script>var a=localStorage.getItem("mdui-drawer-close");if(!a){document.getElementsByTagName("body")[0].className+=" mdui-drawer-body-left"};</script>
+  <header id="header" class="mdui-appbar mdui-appbar-fixed mdui-appbar-scroll-hide mdui-appbar-inset">
+  <div class="mdui-toolbar mdui-color-theme">
+    <a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-drawer="{target: '#sidebar', swipe: true}"><i class="mdui-icon material-icons">menu</i></a>
+    <a href="/" class="mdui-typo-headline">聂明照的博客</a>
+    <div class="mdui-toolbar-spacer"></div>
+    <a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-dialog="{target: '#search'}" mdui-tooltip="{content: '搜索'}"><i class="mdui-icon material-icons">search</i></a>
+    <a href="/atom.xml" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: 'RSS'}"><i class="mdui-icon material-icons">rss_feed</i></a>
+  </div>
+</header>
+<div class="mdui-dialog" id="search">
+  
+    <div class="search-form">
+      <input type="search" class="search-form-input" placeholder="请输入关键字">
+    </div>
+    <div class="search-result" data-resource="/search.xml"></div>
+  
+</div>
+
+  <aside id="sidebar" class="mdui-drawer mdui-drawer-full-height">
+  <script>var a=localStorage.getItem("mdui-drawer-close");if(a){document.getElementById("sidebar").className+=" mdui-drawer-close"};</script>
+  <div class="mdui-grid-tile">
+    <img src="/images/banner.jpg" style="height: 160px;">
+    <img src="/images/avatar.jpg" class="avatar-animation" style="position: absolute; top: 10%; left: 24px; width: 64px; height: 64px; border: 2px solid #fff; border-radius: 50%;">
+    <div class="mdui-grid-tile-actions">
+      <div class="mdui-grid-tile-text">
+        <div class="mdui-grid-tile-title">聂明照</div>
+        <div class="mdui-grid-tile-subtitle"><i class="mdui-icon material-icons">art_track</i>桃李不言，下自成蹊</div>
+      </div>
+      
+        <div class="mdui-grid-tile-buttons">
+          <a href="mailto:1432440963@qq.com" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: '1432440963@qq.com'}"><i class="mdui-icon material-icons">email</i></a>
+        </div>
+      
+    </div>
+  </div>
+
+  <div class="mdui-list" mdui-collapse="{accordion: true}">
+    <a href="/" class="mdui-list-item mdui-ripple">
+      <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-blue">home</i>
+      <div class="mdui-list-item-content">主页</div>
+    </a>
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-0");if(a){document.getElementsByClassName("mdui-collapse-item")[0].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-deep-orange">archive</i>
+        <div class="mdui-list-item-content">归档</div>
+        <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        
+        <a class="mdui-ripple sidebar_archives-link" href="/archives/2020/10/">十月 2020<span class="mdui-ripple sidebar_archives-count">2</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2019/06/">六月 2019<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2019/01/">一月 2019<span class="mdui-ripple sidebar_archives-count">5</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2017/01/">一月 2017<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2016/10/">十月 2016<span class="mdui-ripple sidebar_archives-count">2</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2016/08/">八月 2016<span class="mdui-ripple sidebar_archives-count">2</span></a>
+        
+      </div>
+    </div>
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-1");if(a){document.getElementsByClassName("mdui-collapse-item")[1].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-green">class</i>
+        <div class="mdui-list-item-content">分类</div>
+        <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        
+        <a class="mdui-ripple sidebar_archives-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术<span class="mdui-ripple sidebar_archives-count">9</span></a><a class="mdui-ripple sidebar_archives-link" href="/categories/%E6%96%87%E7%B2%B9/">文粹<span class="mdui-ripple sidebar_archives-count">2</span></a>
+        
+      </div>
+    </div>
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-2");if(a){document.getElementsByClassName("mdui-collapse-item")[2].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-brown">bookmark</i>
+        <div class="mdui-list-item-content">标签</div>
+        <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        
+        <a class="mdui-ripple sidebar_archives-link" href="/tags/Cloudflare/" rel="tag">Cloudflare<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Git/" rel="tag">Git<span class="mdui-ripple sidebar_archives-count">2</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/HomeLab/" rel="tag">HomeLab<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Java/" rel="tag">Java<span class="mdui-ripple sidebar_archives-count">2</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Markdown/" rel="tag">Markdown<span class="mdui-ripple sidebar_archives-count">3</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Self-Hosted/" rel="tag">Self-Hosted<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Ubuntu/" rel="tag">Ubuntu<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/%E5%8F%A4%E6%96%87/" rel="tag">古文<span class="mdui-ripple sidebar_archives-count">2</span></a>
+        
+      </div>
+    </div>
+    <a href="/about" class="mdui-list-item mdui-ripple">
+      <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-purple">person</i>
+      <div class="mdui-list-item-content">关于</div>
+    </a>
+  </div>
+
+  <div class="mdui-divider"></div>
+
+  <div class="mdui-list" mdui-collapse="{accordion: true}">
+    
+      <a href="/timeline" class="mdui-list-item mdui-ripple">时间轴</a>
+    
+      <a href="/tagcloud" class="mdui-list-item mdui-ripple">标签云</a>
+    
+      <a href="/gallery" class="mdui-list-item mdui-ripple">相册</a>
+    
+      <a href="/tv" class="mdui-list-item mdui-ripple">电视直播</a>
+    
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-3");if(a){document.getElementsByClassName("mdui-collapse-item")[3].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <div class="mdui-list-item-content">友情链接</div>
+        <i class="mdui-list-item-icon mdui-icon material-icons">link</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        
+          <a href="//home.niemingzhao.top" target="_blank" class="mdui-list-item mdui-p-l-2 mdui-text-color-theme-accent mdui-ripple" style="justify-content: center;">自建服务导航</a>
+        
+        
+      </div>
+    </div>
+  </div>
+</aside>
+
+  <main id="main" class="mdui-m-t-5 fadeIn animated">
+  
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
+
+  <style>#main article .mdui-card-content .center-block{display:block!important;margin-right:auto!important;margin-left:auto!important}</style>
+  <style>#main article .mdui-card-content .text-center{text-align:center!important}</style>
+  <article class="mdui-card mdui-m-b-5">
+    <header class="mdui-card-media">
+      <img src="/images/random/material-2.png" style="max-height: 240px;">
+      <div class="mdui-card-media-covered">
+        <div class="mdui-card-primary">
+          <div class="mdui-card-primary-title">为本机Git配置SSH链接</div>
+          <div class="mdui-card-primary-subtitle"><i class="iconfont">&#xe697;</i> 2017-01-07 / <i class="iconfont">&#xe601;</i> 聂明照 &nbsp;&nbsp; <span id="busuanzi_container_page_pv" style="display: none;"><i class="iconfont">&#xe7fd;</i> <span id="busuanzi_value_page_pv"></span></span></div>
+        </div>
+      </div>
+      <div class="mdui-card-menu">
+        
+          <button class="mdui-btn mdui-btn-icon mdui-text-color-white" mdui-menu="{target: '#qrcode', align: 'right'}"><i class="mdui-icon material-icons">devices</i></button>
+          <ul class="mdui-menu" id="qrcode">
+            
+              <li class="mdui-menu-item"><a class="mdui-text-center mdui-ripple">发送到手机</a></li>
+            
+            <li class="mdui-menu-item" disabled>
+              
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASYAAAEmCAAAAADqr2IGAAAEIklEQVR42u3bUXIqMQwEQO5/6bwDpIAZaanHOu2vVAq8du+HJVk8foxgPBBgwoQJEyZMBiZMmDB9PdMjHr8//2yeZzMn/89X9ftbv9cz2yMmTJgwYTqP6c3RGC/lNdyGNX/6s5W0e8SECRMmTOcxzRaabDgHfXNIv/x/wlSsChMmTJgw/Umm/Lht09r9J1+HGpgwYcKECdNsQfk8bQF3dsBjwoQJEyZMmwJovpk8VU4QkznbIvUHa+GYMGHChOnLmGaNMvf6+z/0N2HChAkTpi9gakfbiNMe4ckMm88XO8WECRMmTEcwfeLHDFfNuf/WqpSMCRMmTJgOYsqP0rzZNC/s7q9XZy/1TWkYEyZMmDAdxJQ8ssWaXTfOmlDzC9R8HkyYMGHCdCpTsvm2yDtLU/NQIwlQ6tAEEyZMmDAdyrRZdBJGbC4yV9sOnosJEyZMmE5l2kAkm2+LyJuXtJkHEyZMmDCdx3TVovMNtEd1i9JehUapLyZMmDBhui1TmxC+/kybSOcNo7Or0BYOEyZMmDCdx9RuckY2a/G56lLzgiIvJkyYMGG6LdOGZraIlj451GeUb1J6TJgwYcJ0BNNsolnjTl7G3bfs5LhF3IQJEyZMmA5iyimvChHydDcv8s4+iQkTJkyYTmLKQ4FZSjl7yiZMme0CEyZMmDCdytQGB3nbzb5E+7nLyygAwoQJEyZMRzAlpc9ZM02+xJZ+n+hGBWhMmDBhwnQEUztRzjpMONepbx7QDGvhmDBhwoTphkybRpnkkG7Lr8kT9+PNi8eECRMmTAcx5Qlhm6zuQdvrybZ56OL+JkyYMGHC9GVMeRqZTN0uqH3K5mXUST4mTJgwYTqIKQkRZlhts87qAvJ1I86+kxcTJkyYMN2WaXMwb9LRWbiwafS5oL8JEyZMmDDdlqkogI7S4FnrT4ubv5I338WECRMmTAcxtVeGs4BgFgrMEukLrmwxYcKECdMRTHlw0B72xcXhh0vA+cvDhAkTJkznMeUP2AQNbTqao+yJnwYlmDBhwoTpIKb9JvO0c9NCOrsubcMaTJgwYcJ0EtPsInBWIJ4Vdq8KRDBhwoQJ019mai8j862216KzMCVZTx36YMKECROmI5jyrSapb3u1mTf95GXoNoAY1sIxYcKECdNNmOqEsExZZ206SdE2AWqbeDBhwoQJ03lMs+LsbKttApw8cdMetLr1xYQJEyZMt2Jqg4D28bPGoLwZKE/Li8AFEyZMmDAdx3TVzyFmJdf8hxaPi8abp2DChAkTpj/JlBde8yS5TVM3rTxFORgTJkyYMGEaNejMrh7bkGXWloQJEyZMmM5mapt1kkvHNqHN58xR2jACEyZMmDCdx3RV484s6d0HInmQUbx4TJgwYcJ0BJMRBQQGJkyYMGHChMnAhAnTt4x/sHkgT36jqwoAAAAASUVORK5CYII=">
+              
+            </li>
+          </ul>
+        
+        
+          <button class="mdui-btn mdui-btn-icon mdui-text-color-white" mdui-menu="{target: '#share_menu', align: 'right'}"><i class="mdui-icon material-icons">share</i></button>
+          <ul class="mdui-menu" id="share_menu">
+            <li class="mdui-menu-item">
+              <a href="https://service.weibo.com/share/share.php?appkey=&title=为本机Git配置SSH链接&url=https://www.niemingzhao.top/2017/01/07/%E4%B8%BA%E6%9C%AC%E6%9C%BAGit%E9%85%8D%E7%BD%AESSH%E9%93%BE%E6%8E%A5/&pic=https://www.niemingzhao.top/images/favicon.jpg&searchPic=false&style=simple" target="_blank" class="mdui-ripple">分享到 Weibo</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://twitter.com/intent/tweet?text=为本机Git配置SSH链接&url=https://www.niemingzhao.top/2017/01/07/%E4%B8%BA%E6%9C%AC%E6%9C%BAGit%E9%85%8D%E7%BD%AESSH%E9%93%BE%E6%8E%A5/&via=聂明照" target="_blank" class="mdui-ripple">分享到 Twitter</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.niemingzhao.top/2017/01/07/%E4%B8%BA%E6%9C%AC%E6%9C%BAGit%E9%85%8D%E7%BD%AESSH%E9%93%BE%E6%8E%A5/" target="_blank" class="mdui-ripple">分享到 Facebook</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://plus.google.com/share?url=https://www.niemingzhao.top/2017/01/07/%E4%B8%BA%E6%9C%AC%E6%9C%BAGit%E9%85%8D%E7%BD%AESSH%E9%93%BE%E6%8E%A5/" target="_blank" class="mdui-ripple">分享到 Google+</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.niemingzhao.top/2017/01/07/%E4%B8%BA%E6%9C%AC%E6%9C%BAGit%E9%85%8D%E7%BD%AESSH%E9%93%BE%E6%8E%A5/&title=为本机Git配置SSH链接" target="_blank" class="mdui-ripple">分享到 LinkedIn</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://connect.qq.com/widget/shareqq/index.html?site=聂明照的博客&title=为本机Git配置SSH链接&pics=https://www.niemingzhao.top/images/favicon.jpg&url=https://www.niemingzhao.top/2017/01/07/%E4%B8%BA%E6%9C%AC%E6%9C%BAGit%E9%85%8D%E7%BD%AESSH%E9%93%BE%E6%8E%A5/" target="_blank" class="mdui-ripple">分享到 QQ</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://telegram.me/share/url?url=https://www.niemingzhao.top/2017/01/07/%E4%B8%BA%E6%9C%AC%E6%9C%BAGit%E9%85%8D%E7%BD%AESSH%E9%93%BE%E6%8E%A5/&text=为本机Git配置SSH链接" target="_blank" class="mdui-ripple">分享到 Telegram</a>
+            </li>
+          </ul>
+        
+      </div>
+    </header>
+    <div class="mdui-card-content mdui-typo">
+      <p>访问代码仓库时，需要建立安全链接，对于Git，常用的安全链接协议有HTTPS和SSH两种。HTTPS使用更简单，只需在向仓库提交代码时提供一下用户名和密码即可。但是经常出现需要频繁提供用户名和密码的情况，这个不能忍。相比之下，SSH的方式虽然配置有点难，但一次配置，次次可用，是个更好的方式。</p>
+<span id="more"></span>
+<h2 id="%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F" tabindex="-1">配置方式<a class="header-anchor" href="#%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F" aria-hidden="true"></a></h2>
+<h3 id="%E9%85%8D%E7%BD%AEgit%E8%B4%A6%E6%88%B7%E4%BF%A1%E6%81%AF" tabindex="-1">配置Git账户信息<a class="header-anchor" href="#%E9%85%8D%E7%BD%AEgit%E8%B4%A6%E6%88%B7%E4%BF%A1%E6%81%AF" aria-hidden="true"></a></h3>
+<p>要使用Git建立远程链接，肯定要先配置本机的Git账户信息啦。<br>
+首先打开本机上的bash终端，下面的命令行都是在bash终端中执行的，使用windows系统的小伙伴们不要使用cmd，需要打开git-bash才行。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;username&quot;</span><br><span class="line">git config --global user.email &quot;email&quot;</span><br></pre></td></tr></table></figure>
+<p>上面引号里就是你的远程代码仓库（如github）的账号信息了，username是用户名（昵称），email是注册邮箱。</p>
+<h3 id="%E6%A3%80%E6%9F%A5%E6%9C%AC%E6%9C%BA%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8ssh-key" tabindex="-1">检查本机是否存在SSH Key<a class="header-anchor" href="#%E6%A3%80%E6%9F%A5%E6%9C%AC%E6%9C%BA%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8ssh-key" aria-hidden="true"></a></h3>
+<p>检查一下本机是不是已经建立过SSH Key，如果有的话可以备份到其它地方保存，然后删除掉本机的SSH Key。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd ~/.ssh</span><br></pre></td></tr></table></figure>
+<p>如果执行命令后，会进入文件夹，就说明已经建立过SSH Key，需要清空。</p>
+<h3 id="%E7%94%9F%E6%88%90%E6%96%B0%E7%9A%84ssh-key" tabindex="-1">生成新的SSH Key<a class="header-anchor" href="#%E7%94%9F%E6%88%90%E6%96%B0%E7%9A%84ssh-key" aria-hidden="true"></a></h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C &quot;email&quot;</span><br></pre></td></tr></table></figure>
+<p>执行命令后，会问你一些问题，是否要建立密码一类的，不用管，一路回车略过就行。然后你会在你的本机用户主目录下看到一个<code>.ssh</code>的文件夹。里面有<code>id_rsa</code>和<code>id_rsa.pub</code>两个文件，这两个就是SSH Key的秘钥对，<code>id_rsa</code>是私钥，不能泄露出去，<code>id_rsa.pub</code>是公钥，可以放心地告诉任何人。</p>
+<h3 id="%E4%B8%BA%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93%E9%85%8D%E7%BD%AEssh-key" tabindex="-1">为远程仓库配置SSH Key<a class="header-anchor" href="#%E4%B8%BA%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93%E9%85%8D%E7%BD%AEssh-key" aria-hidden="true"></a></h3>
+<p>进入你的远程仓库（如github）的设置（总账户的设置而不是单个代码库的设置），点开<code>SSH and GPG keys</code>，然后点击<code>New SSH key</code>，Title随便填，再打开<code>id_rsa.pub</code>文件，复制所有内容填到Key文本框内，点击<code>Add SSH key</code>保存即可。</p>
+<h3 id="%E6%B5%8B%E8%AF%95ssh%E9%93%BE%E6%8E%A5" tabindex="-1">测试SSH链接<a class="header-anchor" href="#%E6%B5%8B%E8%AF%95ssh%E9%93%BE%E6%8E%A5" aria-hidden="true"></a></h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+<p>执行命令后，可能会问你是否继续链接，输入<code>yes</code>回车即可。如果看到<code>Hi</code>后面是你的用户名，就说明配置成功，以后就可以直接提交代码了。</p>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/markdown-it-texmath/css/texmath.min.css">
+
+      
+        <div class="mdui-m-y-2 mdui-text-center">
+          <button class="mdui-fab mdui-color-deep-orange mdui-text-color-white mdui-ripple" mdui-dialog="{target: '#donate'}" mdui-tooltip="{content: '打赏', position: 'top'}"><i class="mdui-icon material-icons">thumb_up</i></button>
+        </div>
+      
+      <blockquote>
+        
+          <strong>本文遵循 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">CC BY-NC-SA 4.0</a> 许可协议</strong><br>
+        
+        <strong>本文链接：</strong><br><a href="https://www.niemingzhao.top/2017/01/07/%E4%B8%BA%E6%9C%AC%E6%9C%BAGit%E9%85%8D%E7%BD%AESSH%E9%93%BE%E6%8E%A5/">https://www.niemingzhao.top/2017/01/07/为本机Git配置SSH链接/</a>
+      </blockquote>
+    </div>
+    <footer class="mdui-card-actions">
+      
+        <a class="mdui-ripple article_categories-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>
+      
+      
+        <a class="mdui-ripple article_tags-link" href="/tags/Git/" rel="tag">Git</a>
+      
+    </footer>
+    
+      <div class="mdui-dialog" id="donate">
+        <div class="mdui-tab mdui-tab-centered">
+          
+            <a href="#donate-0" class="mdui-ripple">支付宝</a>
+          
+            <a href="#donate-1" class="mdui-ripple">微信支付</a>
+          
+        </div>
+        
+        
+          <div id="donate-0" class="mdui-p-a-2 mdui-typo mdui-text-center">
+            
+              <img src="/images/alipay.jpg" style="width: 300px;">
+            
+          </div>
+        
+          <div id="donate-1" class="mdui-p-a-2 mdui-typo mdui-text-center">
+            
+              <img src="/images/wechat.jpg" style="width: 300px;">
+            
+          </div>
+        
+      </div>
+    
+  </article>
+  
+<script src="//cdn.bootcdn.net/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+  <script>$("#main article .mdui-card-content img.fancybox").on("click",function(e){$.fancybox.open({src:$(this).attr("src")});});</script>
+
+
+  <nav id="paginator">
+    
+      <a rel="prev" class="extend prev" href="/2019/01/01/%E8%87%AA%E5%BB%BA%E6%9C%8D%E5%8A%A1%E5%AF%BC%E8%88%AA/">
+        <button aria-label="prev" class="mdui-btn mdui-btn-raised mdui-btn-icon mdui-color-theme-accent mdui-ripple"><i class="mdui-icon material-icons">arrow_back</i></button>
+        <span class="mdui-p-x-3" mdui-tooltip="{content: '自建服务导航'}">上一篇</span>
+      </a>
+    
+    <div class="spacer"></div>
+    
+      <a rel="next" class="extend next" href="/2016/10/29/%E5%B2%B3%E9%98%B3%E6%A5%BC%E8%AE%B0/">
+        <span class="mdui-p-x-3" mdui-tooltip="{content: '岳阳楼记'}">下一篇</span>
+        <button aria-label="next" class="mdui-btn mdui-btn-raised mdui-btn-icon mdui-color-theme-accent mdui-ripple"><i class="mdui-icon material-icons">arrow_forward</i></button>
+      </a>
+    
+  </nav>
+
+
+  <div id="comment" class="mdui-m-t-5">
+    <div id="gitalk-container"></div>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script>
+  var gitalk = new Gitalk({
+    clientID: 'c3d07683889a30cce9f4',
+    clientSecret: '4075822d529574759bcaf8f1b55618cf6f1421f9',
+    repo: 'niemingzhao.github.io',
+    owner: 'niemingzhao',
+    admin: ['niemingzhao'],
+    id: 'b709f7a2-2a77-11ea-a744-1f4d64ae768d' || location.pathname,
+    distractionFreeMode: false
+  });
+  gitalk.render('gitalk-container');
+</script>
+
+  </div>
+
+
+
+  <div style="position: fixed !important; right: 16px; top: 30%;">
+    <button class="mdui-fab mdui-fab-mini mdui-ripple" mdui-menu="{target: '#toc'}"><i class="mdui-icon material-icons">toc</i></button>
+    <ul class="mdui-menu" id="toc">
+      <li class="mdui-menu-item" disabled><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F"><span class="toc-text">配置方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEgit%E8%B4%A6%E6%88%B7%E4%BF%A1%E6%81%AF"><span class="toc-text">配置Git账户信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A3%80%E6%9F%A5%E6%9C%AC%E6%9C%BA%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8ssh-key"><span class="toc-text">检查本机是否存在SSH Key</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E6%96%B0%E7%9A%84ssh-key"><span class="toc-text">生成新的SSH Key</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93%E9%85%8D%E7%BD%AEssh-key"><span class="toc-text">为远程仓库配置SSH Key</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95ssh%E9%93%BE%E6%8E%A5"><span class="toc-text">测试SSH链接</span></a></li></ol></li></ol></li>
+    </ul>
+  </div>
+
+
+</main>
+  <footer id="footer" class="mdui-m-t-5 mdui-p-y-3 mdui-color-theme">
+  <div class="mdui-p-y-0 mdui-text-center">
+    
+    
+    
+    
+      <a href="https://weibo.com/2360828682/profile" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xec7e;</i></a>
+    
+    
+    
+    
+      <a href="https://github.com/niemingzhao" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe7ab;</i></a>
+    
+    
+    
+      <a href="https://www.zhihu.com/people/nie-1-58" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe6c0;</i></a>
+    
+    
+    
+      <a href="tencent://message/?uin=1432440963&Menu=yes" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe651;</i></a>
+    
+    
+  </div>
+  <div class="mdui-p-y-1 mdui-text-center">
+    Copyright &copy; 2016 - 2026 聂明照<br>
+    Powered by <a href="https://hexo.io/" target="_blank" class="mdui-text-color-theme-accent">Hexo</a> | Theme - <a href="https://github.com/niemingzhao/niemingzhao.github.io/tree/theme" target="_blank" class="mdui-text-color-theme-accent">default</a><br>京公网安备<a href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502053272" target="_blank" class="mdui-text-color-theme-accent">11010502053272</a>号 | 京ICP备<a href="https://beian.miit.gov.cn" target="_blank" class="mdui-text-color-theme-accent">2023020255</a>号
+    <br>
+      <span id="busuanzi_container_site_pv" style="display: none;"><i class="iconfont">&#xe7fd;</i> <span id="busuanzi_value_site_pv"></span></span> &nbsp;&nbsp;
+      <span id="busuanzi_container_site_uv" style="display: none;"><i class="iconfont">&#xe601;</i> <span id="busuanzi_value_site_uv"></span></span>
+    
+  </div>
+</footer>
+
+  <button id="gotop" class="mdui-fab mdui-fab-fixed mdui-fab-hide mdui-color-theme-accent mdui-ripple"><i class="mdui-icon material-icons">arrow_upward</i></button>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+<script src="/js/mdui.js"></script>
+<script src="/js/script.js"></script>
+
+  
+<script src="/custom.js"></script>
+
+</body>
+</html>

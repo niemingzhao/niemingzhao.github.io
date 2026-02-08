@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="renderer" content="webkit">
+
+  
+  <title>Ubuntu Server Settings | 聂明照的博客</title>
+
+  <link rel="shortcut icon" href="/images/favicon.jpg">
+  <link rel="alternate" href="/atom.xml" title="聂明照的博客" type="application/atom+xml">
+  <meta name="description" content="Here is the record of configuring the basic environment and using common commands of Ubuntu Linux Server according to my usage habits. It is written here for my reference at any time.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu Server Settings">
+<meta property="og:url" content="https://www.niemingzhao.top/2019/01/01/Ubuntu-Server-Settings/index.html">
+<meta property="og:site_name" content="聂明照的博客">
+<meta property="og:description" content="Here is the record of configuring the basic environment and using common commands of Ubuntu Linux Server according to my usage habits. It is written here for my reference at any time.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-01-01T00:00:00.000Z">
+<meta property="article:modified_time" content="2026-02-08T11:30:13.900Z">
+<meta property="article:author" content="聂明照">
+<meta property="article:tag" content="Ubuntu">
+<meta name="twitter:card" content="summary">
+
+  <meta name="keywords" content=",Ubuntu">
+  <meta name="format-detection" content="telephone=no,email=no">
+  <meta name="theme-color" content="#9C27B0">
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="聂明照的博客">
+  <meta name="msapplication-starturl" content="https://www.niemingzhao.top/2019/01/01/Ubuntu-Server-Settings/">
+  <meta name="msapplication-navbutton-color" content="#9C27B0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="聂明照的博客">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="apple-touch-icon" href="/images/favicon.jpg">
+
+  
+    <link rel="canonical" href="https://www.niemingzhao.top/2019/01/01/Ubuntu-Server-Settings/">
+  
+
+  <meta name="google-site-verification" content="fXjtlIfaDc_X-0P11rO3bEp1Nk4IKXphoJv0GqGZCco">
+  <meta name="baidu-site-verification" content="I3t1wfwZvd">
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create','UA-139531378-1','auto');ga('send','pageview');
+</script>
+
+  <script>
+  var _hmt = _hmt || [];
+  (function() {var hm = document.createElement('script');
+  hm.src = '//hm.baidu.com/hm.js?22e4d3b73c21ec2f0e1b4f3ff78c9a9c';
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+  
+
+  
+<link rel="stylesheet" href="/css/mdui.css">
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/custom.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="mdui-appbar-with-toolbar mdui-theme-primary-brown mdui-theme-accent-blue">
+  <script>var a=localStorage.getItem("mdui-theme-layout-dark");if(a){document.getElementsByTagName("body")[0].className+=" mdui-theme-layout-dark"};</script>
+  <script>if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){document.getElementsByTagName("body")[0].className+=" mdui-theme-layout-dark"};</script>
+  <script>var a=localStorage.getItem("mdui-drawer-close");if(!a){document.getElementsByTagName("body")[0].className+=" mdui-drawer-body-left"};</script>
+  <header id="header" class="mdui-appbar mdui-appbar-fixed mdui-appbar-scroll-hide mdui-appbar-inset">
+  <div class="mdui-toolbar mdui-color-theme">
+    <a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-drawer="{target: '#sidebar', swipe: true}"><i class="mdui-icon material-icons">menu</i></a>
+    <a href="/" class="mdui-typo-headline">聂明照的博客</a>
+    <div class="mdui-toolbar-spacer"></div>
+    <a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-dialog="{target: '#search'}" mdui-tooltip="{content: '搜索'}"><i class="mdui-icon material-icons">search</i></a>
+    <a href="/atom.xml" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: 'RSS'}"><i class="mdui-icon material-icons">rss_feed</i></a>
+  </div>
+</header>
+<div class="mdui-dialog" id="search">
+  
+    <div class="search-form">
+      <input type="search" class="search-form-input" placeholder="请输入关键字">
+    </div>
+    <div class="search-result" data-resource="/search.xml"></div>
+  
+</div>
+
+  <aside id="sidebar" class="mdui-drawer mdui-drawer-full-height">
+  <script>var a=localStorage.getItem("mdui-drawer-close");if(a){document.getElementById("sidebar").className+=" mdui-drawer-close"};</script>
+  <div class="mdui-grid-tile">
+    <img src="/images/banner.jpg" style="height: 160px;">
+    <img src="/images/avatar.jpg" class="avatar-animation" style="position: absolute; top: 10%; left: 24px; width: 64px; height: 64px; border: 2px solid #fff; border-radius: 50%;">
+    <div class="mdui-grid-tile-actions">
+      <div class="mdui-grid-tile-text">
+        <div class="mdui-grid-tile-title">聂明照</div>
+        <div class="mdui-grid-tile-subtitle"><i class="mdui-icon material-icons">art_track</i>桃李不言，下自成蹊</div>
+      </div>
+      
+        <div class="mdui-grid-tile-buttons">
+          <a href="mailto:1432440963@qq.com" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: '1432440963@qq.com'}"><i class="mdui-icon material-icons">email</i></a>
+        </div>
+      
+    </div>
+  </div>
+
+  <div class="mdui-list" mdui-collapse="{accordion: true}">
+    <a href="/" class="mdui-list-item mdui-ripple">
+      <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-blue">home</i>
+      <div class="mdui-list-item-content">主页</div>
+    </a>
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-0");if(a){document.getElementsByClassName("mdui-collapse-item")[0].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-deep-orange">archive</i>
+        <div class="mdui-list-item-content">归档</div>
+        <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        
+        <a class="mdui-ripple sidebar_archives-link" href="/archives/2020/10/">十月 2020<span class="mdui-ripple sidebar_archives-count">2</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2019/06/">六月 2019<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2019/01/">一月 2019<span class="mdui-ripple sidebar_archives-count">5</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2017/01/">一月 2017<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2016/10/">十月 2016<span class="mdui-ripple sidebar_archives-count">2</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2016/08/">八月 2016<span class="mdui-ripple sidebar_archives-count">2</span></a>
+        
+      </div>
+    </div>
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-1");if(a){document.getElementsByClassName("mdui-collapse-item")[1].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-green">class</i>
+        <div class="mdui-list-item-content">分类</div>
+        <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        
+        <a class="mdui-ripple sidebar_archives-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术<span class="mdui-ripple sidebar_archives-count">9</span></a><a class="mdui-ripple sidebar_archives-link" href="/categories/%E6%96%87%E7%B2%B9/">文粹<span class="mdui-ripple sidebar_archives-count">2</span></a>
+        
+      </div>
+    </div>
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-2");if(a){document.getElementsByClassName("mdui-collapse-item")[2].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-brown">bookmark</i>
+        <div class="mdui-list-item-content">标签</div>
+        <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        
+        <a class="mdui-ripple sidebar_archives-link" href="/tags/Cloudflare/" rel="tag">Cloudflare<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Git/" rel="tag">Git<span class="mdui-ripple sidebar_archives-count">2</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/HomeLab/" rel="tag">HomeLab<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Java/" rel="tag">Java<span class="mdui-ripple sidebar_archives-count">2</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Markdown/" rel="tag">Markdown<span class="mdui-ripple sidebar_archives-count">3</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Self-Hosted/" rel="tag">Self-Hosted<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Ubuntu/" rel="tag">Ubuntu<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/%E5%8F%A4%E6%96%87/" rel="tag">古文<span class="mdui-ripple sidebar_archives-count">2</span></a>
+        
+      </div>
+    </div>
+    <a href="/about" class="mdui-list-item mdui-ripple">
+      <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-purple">person</i>
+      <div class="mdui-list-item-content">关于</div>
+    </a>
+  </div>
+
+  <div class="mdui-divider"></div>
+
+  <div class="mdui-list" mdui-collapse="{accordion: true}">
+    
+      <a href="/timeline" class="mdui-list-item mdui-ripple">时间轴</a>
+    
+      <a href="/tagcloud" class="mdui-list-item mdui-ripple">标签云</a>
+    
+      <a href="/gallery" class="mdui-list-item mdui-ripple">相册</a>
+    
+      <a href="/tv" class="mdui-list-item mdui-ripple">电视直播</a>
+    
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-3");if(a){document.getElementsByClassName("mdui-collapse-item")[3].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <div class="mdui-list-item-content">友情链接</div>
+        <i class="mdui-list-item-icon mdui-icon material-icons">link</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        
+          <a href="//home.niemingzhao.top" target="_blank" class="mdui-list-item mdui-p-l-2 mdui-text-color-theme-accent mdui-ripple" style="justify-content: center;">自建服务导航</a>
+        
+        
+      </div>
+    </div>
+  </div>
+</aside>
+
+  <main id="main" class="mdui-m-t-5 fadeIn animated">
+  
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
+
+  <style>#main article .mdui-card-content .center-block{display:block!important;margin-right:auto!important;margin-left:auto!important}</style>
+  <style>#main article .mdui-card-content .text-center{text-align:center!important}</style>
+  <article class="mdui-card mdui-m-b-5">
+    <header class="mdui-card-media">
+      <img src="//images.niemingzhao.top/image/2020/12/20/wu_1elfkitn8je787615os16tlu257.jpg" style="max-height: 240px;">
+      <div class="mdui-card-media-covered">
+        <div class="mdui-card-primary">
+          <div class="mdui-card-primary-title">Ubuntu Server Settings</div>
+          <div class="mdui-card-primary-subtitle"><i class="iconfont">&#xe697;</i> 2019-01-01 / <i class="iconfont">&#xe601;</i> 聂明照 &nbsp;&nbsp; <span id="busuanzi_container_page_pv" style="display: none;"><i class="iconfont">&#xe7fd;</i> <span id="busuanzi_value_page_pv"></span></span></div>
+        </div>
+      </div>
+      <div class="mdui-card-menu">
+        
+          <button class="mdui-btn mdui-btn-icon mdui-text-color-white" mdui-menu="{target: '#qrcode', align: 'right'}"><i class="mdui-icon material-icons">devices</i></button>
+          <ul class="mdui-menu" id="qrcode">
+            
+              <li class="mdui-menu-item"><a class="mdui-text-center mdui-ripple">发送到手机</a></li>
+            
+            <li class="mdui-menu-item" disabled>
+              
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACa0lEQVR42u3bS27DMAwFQN//0u0BgjiPpKS4xWgVIB97vJAI8uX6+dfrwsPDw8PDw8PDexjvitfr519/5/V1cpXet97eCR4eHt4R3oetNuAl+HeY5JEl94aHh4d3npdv2fc3XT1Uqo/gw3GCh4eH9zBedevPt/ukTMfDw8P7i7zJ8RC1Ep5z7uHh4eEtakYkbdZy+yA+Krb3WvDw8PBiXnUAdvL1F+Z7eHh4eLe8cqQpOAAmcYTkMNiYKcPDw8MLePeN1+rxkIPzNkc1xICHh4e3m5eM7ScPIkHeXzGPJuDh4eGd5OWlcHmbDlq0vbhV1MbFw8PD28Crxknz2EFOzWNbeHh4eE/grbpMPuDvjdkKcVg8PDy8g7xJs6BXiE8K6LcHGB4eHt4RXrUtmxffObv6uAvJCDw8PLwNvDmpvH0PYlgfmhp4eHh4B3mTmNR868+jDHh4eHjP5OUDp7z5O4kdLOtS4+Hh4S3irS18k4Mhf7f89wA8PDy8zby8CO4Vzb2xVh63ijJleHh4eEt5eQhgXmr3wlvlUCweHh7eZt4qQN4y6IW68gEbHh4e3m5ebwue4PNr5SU+Hh4e3nlecnP72NXHgYeHh/ddXq+YTti9YVi1IYKHh4d3nldd1dFUr1DuXRcPDw/vDO+K16TM7b3bLNbx8PDwjvCqw/t8W8/L5Rz/4ZN4eHh4B3nzaFS1fXAVVzMZgYeHh/dVXtJQqB4S1YgVHh4e3l/nVcMBk9FX9Jt4eHh4B3nVLb5aalfbtXmZjoeHh3ee12sEVMdaPdj9obVxvoeHh4e3KHT1/IWHh4eHh4eHh/eA9QvDVQw3icVq4AAAAABJRU5ErkJggg==">
+              
+            </li>
+          </ul>
+        
+        
+          <button class="mdui-btn mdui-btn-icon mdui-text-color-white" mdui-menu="{target: '#share_menu', align: 'right'}"><i class="mdui-icon material-icons">share</i></button>
+          <ul class="mdui-menu" id="share_menu">
+            <li class="mdui-menu-item">
+              <a href="https://service.weibo.com/share/share.php?appkey=&title=Ubuntu Server Settings&url=https://www.niemingzhao.top/2019/01/01/Ubuntu-Server-Settings/&pic=https://www.niemingzhao.top/images/favicon.jpg&searchPic=false&style=simple" target="_blank" class="mdui-ripple">分享到 Weibo</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://twitter.com/intent/tweet?text=Ubuntu Server Settings&url=https://www.niemingzhao.top/2019/01/01/Ubuntu-Server-Settings/&via=聂明照" target="_blank" class="mdui-ripple">分享到 Twitter</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.niemingzhao.top/2019/01/01/Ubuntu-Server-Settings/" target="_blank" class="mdui-ripple">分享到 Facebook</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://plus.google.com/share?url=https://www.niemingzhao.top/2019/01/01/Ubuntu-Server-Settings/" target="_blank" class="mdui-ripple">分享到 Google+</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.niemingzhao.top/2019/01/01/Ubuntu-Server-Settings/&title=Ubuntu Server Settings" target="_blank" class="mdui-ripple">分享到 LinkedIn</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://connect.qq.com/widget/shareqq/index.html?site=聂明照的博客&title=Ubuntu Server Settings&pics=https://www.niemingzhao.top/images/favicon.jpg&url=https://www.niemingzhao.top/2019/01/01/Ubuntu-Server-Settings/" target="_blank" class="mdui-ripple">分享到 QQ</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://telegram.me/share/url?url=https://www.niemingzhao.top/2019/01/01/Ubuntu-Server-Settings/&text=Ubuntu Server Settings" target="_blank" class="mdui-ripple">分享到 Telegram</a>
+            </li>
+          </ul>
+        
+      </div>
+    </header>
+    <div class="mdui-card-content mdui-typo">
+      <p>Here is the record of configuring the basic environment and using common commands of Ubuntu Linux Server according to my usage habits. It is written here for my reference at any time.</p>
+<span id="more"></span>
+<h3 id="%E2%85%B0.-initial-settings" tabindex="-1">Ⅰ. Initial Settings<a class="header-anchor" href="#%E2%85%B0.-initial-settings" aria-hidden="true"></a></h3>
+<h4 id="1.-change-source-list-(optional)" tabindex="-1">1. Change Source List (Optional)<a class="header-anchor" href="#1.-change-source-list-(optional)" aria-hidden="true"></a></h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">lsb_release -a</span><br><span class="line"></span><br><span class="line">sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak</span><br><span class="line">sudo vi /etc/apt/sources.list</span><br><span class="line"></span><br><span class="line">:%d</span><br><span class="line"></span><br><span class="line">...(for 18.04)</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse</span><br><span class="line">...</span><br><span class="line">...(for 16.04)</span><br><span class="line"># deb cdrom:[Ubuntu 16.04 LTS _Xenial Xerus_ - Release amd64 (20160420.1)]/ xenial main restricted</span><br><span class="line">deb-src http://archive.ubuntu.com/ubuntu xenial main restricted #Added by software-properties</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial main restricted</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ xenial main restricted multiverse universe #Added by software-properties</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial-updates main restricted</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates main restricted multiverse universe #Added by software-properties</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial universe</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial-updates universe</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial multiverse</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial-updates multiverse</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial-backports main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ xenial-backports main restricted universe multiverse #Added by software-properties</span><br><span class="line">deb http://archive.canonical.com/ubuntu xenial partner</span><br><span class="line">deb-src http://archive.canonical.com/ubuntu xenial partner</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial-security main restricted</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security main restricted multiverse universe #Added by software-properties</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial-security universe</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ xenial-security multiverse</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">:wq!</span><br><span class="line"></span><br><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure>
+<h4 id="2.-update-system" tabindex="-1">2. Update System<a class="header-anchor" href="#2.-update-system" aria-hidden="true"></a></h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get upgrade</span><br><span class="line">sudo apt-get dist-upgrade</span><br><span class="line">sudo apt-get install -f</span><br><span class="line">sudo apt-get autoremove</span><br><span class="line">sudo apt-get autoclean</span><br><span class="line">sudo apt-get clean</span><br></pre></td></tr></table></figure>
+<h4 id="3.-add-new-user" tabindex="-1">3. Add New User<a class="header-anchor" href="#3.-add-new-user" aria-hidden="true"></a></h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">sudo adduser nie</span><br><span class="line"></span><br><span class="line">sudo vi /etc/sudoers</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"># User privilege specification</span><br><span class="line">...</span><br><span class="line">nie     ALL=(ALL:ALL) ALL</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">:wq!</span><br><span class="line"></span><br><span class="line">history -c &amp;&amp; history -w</span><br><span class="line">su nie</span><br></pre></td></tr></table></figure>
+<h4 id="4.-enable-ssh-remote-login" tabindex="-1">4. Enable SSH Remote Login<a class="header-anchor" href="#4.-enable-ssh-remote-login" aria-hidden="true"></a></h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install openssh-client</span><br><span class="line">sudo apt-get install openssh-server</span><br><span class="line"></span><br><span class="line">sudo vi /etc/ssh/sshd_config</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">PermitRootLogin no</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">:wq!</span><br><span class="line"></span><br><span class="line">sudo service ssh restart</span><br></pre></td></tr></table></figure>
+<h4 id="5.-install-basic-environment" tabindex="-1">5. Install Basic Environment<a class="header-anchor" href="#5.-install-basic-environment" aria-hidden="true"></a></h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git</span><br><span class="line">sudo apt-get install wget</span><br><span class="line">sudo apt-get install curl</span><br><span class="line">sudo apt-get install openssl</span><br><span class="line">sudo apt-get install libssl-dev</span><br><span class="line">sudo apt-get install ca-certificates</span><br><span class="line">sudo apt-get install build-essential</span><br><span class="line"></span><br><span class="line">sudo apt-get install python</span><br><span class="line">sudo apt-get install python-pip</span><br><span class="line">sudo apt-get install python-dev</span><br><span class="line">sudo apt-get install python3</span><br><span class="line">sudo apt-get install python3-pip</span><br><span class="line">sudo apt-get install python3-dev</span><br><span class="line">sudo apt-get install python3-venv</span><br><span class="line"></span><br><span class="line">mkdir ~/.pip</span><br><span class="line">vi ~/.pip/pip.conf</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">[global]</span><br><span class="line">index-url = https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">:wq!</span><br><span class="line"></span><br><span class="line">cd ~</span><br><span class="line">python3 -m venv venv</span><br><span class="line">source venv/bin/activate</span><br><span class="line">python -m pip install --upgrade pip setuptools</span><br><span class="line">pip install wheel twine autopep8 pylint PyInstaller Sphinx PyQt5 numpy sympy scipy pandas matplotlib scikit-learn scikit-image requests beautifulsoup4 jupyter jupyter_contrib_nbextensions</span><br><span class="line">jupyter contrib nbextension install --sys-prefix</span><br><span class="line">mkdir ~/workspace</span><br><span class="line">mkdir ~/workspace/notebook</span><br><span class="line">jupyter notebook --generate-config</span><br><span class="line">jupyter notebook password</span><br><span class="line">vi ~/.jupyter/jupyter_notebook_config.py</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">c.NotebookApp.notebook_dir = u&#x27;/home/nie/workspace/notebook&#x27;</span><br><span class="line">c.NotebookApp.allow_remote_access = True</span><br><span class="line">c.NotebookApp.open_browser = False</span><br><span class="line">c.NotebookApp.ip = &#x27;*&#x27;</span><br><span class="line">c.NotebookApp.port = 8888</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">:wq!</span><br><span class="line"></span><br><span class="line">sudo vi /lib/systemd/system/jupyter.service</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">[Unit]</span><br><span class="line">Description=jupyter</span><br><span class="line">After=network.target</span><br><span class="line">[Service]</span><br><span class="line">User=nie</span><br><span class="line">Group=nie</span><br><span class="line">Type=simple</span><br><span class="line">PIDFile=/run/jupyter.pid</span><br><span class="line">WorkingDirectory=/home/nie/workspace/notebook</span><br><span class="line">EnvironmentFile=/home/nie/venv/bin/jupyter</span><br><span class="line">ExecStart=/home/nie/venv/bin/jupyter notebook</span><br><span class="line">Restart=always</span><br><span class="line">RestartSec=30s</span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">:wq!</span><br><span class="line"></span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl enable jupyter.service</span><br><span class="line">sudo systemctl start jupyter.service</span><br><span class="line">sudo systemctl status jupyter.service</span><br><span class="line"></span><br><span class="line">deactivate</span><br><span class="line"></span><br><span class="line">sudo apt-get install software-properties-common</span><br><span class="line">sudo add-apt-repository ppa:webupd8team/java</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install oracle-java8-installer</span><br><span class="line">sudo apt-get install oracle-java8-set-default</span><br><span class="line">sudo vi /etc/environment</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">JAVA_HOME=&quot;/usr/lib/jvm/java-8-oracle&quot;</span><br><span class="line">JRE_HOME=&quot;/usr/lib/jvm/java-8-oracle/jre&quot;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">:wq!</span><br><span class="line"></span><br><span class="line">source /etc/environment</span><br><span class="line">echo $JAVA_HOME</span><br><span class="line"></span><br><span class="line">sudo apt-get install maven</span><br><span class="line"></span><br><span class="line">sudo apt-get install nginx</span><br><span class="line">ls /etc/nginx/sites-available</span><br><span class="line">ls /etc/nginx/sites-enabled</span><br><span class="line">sudo service nginx reload</span><br><span class="line"></span><br><span class="line">sudo apt-get install tomcat8</span><br><span class="line">sudo apt-get install tomcat8-admin tomcat8-docs tomcat8-examples tomcat8-user</span><br><span class="line">ls /var/lib/tomcat8/webapps</span><br><span class="line">sudo vi /etc/tomcat8/tomcat-users.xml</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">  &lt;role rolename=&quot;manager-gui&quot;/&gt;</span><br><span class="line">  &lt;role rolename=&quot;admin-gui&quot;/&gt;</span><br><span class="line">  &lt;user username=&quot;nie&quot; password=&quot;123456&quot; roles=&quot;manager-gui,admin-gui&quot;/&gt;</span><br><span class="line">&lt;/tomcat-users&gt;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">:wq!</span><br><span class="line"></span><br><span class="line">sudo service tomcat8 restart</span><br><span class="line"></span><br><span class="line">sudo apt-get install nodejs</span><br><span class="line">sudo apt-get install nodejs-dev</span><br><span class="line">sudo apt-get install npm</span><br><span class="line">npm config set registry https://registry.npm.taobao.org</span><br><span class="line">sudo npm install -g npm</span><br><span class="line">sudo npm install -g n</span><br><span class="line">sudo n lts</span><br><span class="line">sudo npm cache clean --force</span><br><span class="line"></span><br><span class="line">sudo apt-get install mariadb-server mariadb-client</span><br><span class="line">sudo mysql -u root</span><br><span class="line"></span><br><span class="line">use mysql;</span><br><span class="line">update user set plugin=&#x27;&#x27; where User=&#x27;root&#x27;;</span><br><span class="line">flush privileges;</span><br><span class="line">exit</span><br><span class="line"></span><br><span class="line">sudo service mysql restart</span><br><span class="line">sudo mysql_secure_installation</span><br><span class="line">sudo mysql -u root -p</span><br><span class="line"></span><br><span class="line">exit</span><br><span class="line"></span><br><span class="line">sudo apt-get install mongodb</span><br><span class="line">sudo service mongodb restart</span><br><span class="line">mongo</span><br><span class="line"></span><br><span class="line">exit</span><br><span class="line"></span><br><span class="line">sudo apt-get install redis-server</span><br><span class="line">sudo service redis-server restart</span><br><span class="line">redis-cli</span><br><span class="line"></span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+<h4 id="6.-safeguard-system" tabindex="-1">6. Safeguard System<a class="header-anchor" href="#6.-safeguard-system" aria-hidden="true"></a></h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install rkhunter</span><br><span class="line">sudo vi /etc/rkhunter.conf</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">UPDATE_MIRRORS=1</span><br><span class="line">...</span><br><span class="line">MIRRORS_MODE=0</span><br><span class="line">...</span><br><span class="line">WEB_CMD=&quot;&quot;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">:wq!</span><br><span class="line"></span><br><span class="line">sudo rkhunter --update</span><br><span class="line">sudo rkhunter --checkall</span><br><span class="line"></span><br><span class="line">sudo apt-get install clamav</span><br><span class="line">sudo apt-get install clamav-daemon</span><br><span class="line">sudo clamscan -r ~/ --remove</span><br><span class="line"></span><br><span class="line">sudo apt-get install denyhosts</span><br><span class="line">sudo vi /etc/denyhosts.conf</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">PURGE_DENY = 1h</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">:wq!</span><br><span class="line"></span><br><span class="line">sudo service denyhosts stop</span><br><span class="line">sudo denyhosts --purge</span><br><span class="line">sudo service denyhosts restart</span><br><span class="line">sudo iptables --flush</span><br></pre></td></tr></table></figure>
+<h4 id="7.-cleanup-system" tabindex="-1">7. Cleanup System<a class="header-anchor" href="#7.-cleanup-system" aria-hidden="true"></a></h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get autoremove --purge</span><br><span class="line">sudo apt-get autoclean</span><br><span class="line">sudo apt-get clean</span><br><span class="line">kill -9 $(ps -A -ostat,ppid | grep -e &#x27;[zZ]&#x27;| awk &#x27;&#123; print $2 &#125;&#x27;)</span><br><span class="line">dpkg -l |grep ^rc|awk &#x27;&#123;print $2&#125;&#x27; |sudo xargs dpkg -P</span><br><span class="line">history -c &amp;&amp; history -w</span><br></pre></td></tr></table></figure>
+<h4 id="8.-backup-system" tabindex="-1">8. Backup System<a class="header-anchor" href="#8.-backup-system" aria-hidden="true"></a></h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">sudo su</span><br><span class="line">cd /</span><br><span class="line">tar -cvpzf backup.tar.gz --exclude=/backup.tar.gz --exclude=/proc --exclude=/sys --exclude=/mnt --exclude=/media --exclude=/run --exclude=/dev /</span><br><span class="line"></span><br><span class="line">sudo su</span><br><span class="line">cd /</span><br><span class="line">tar -xvpzf backup.tar.gz -C / --numeric-owner</span><br><span class="line">mkdir /proc /sys /mnt /media</span><br><span class="line">reboot</span><br><span class="line"></span><br><span class="line">(from Live CD)</span><br><span class="line">sudo su</span><br><span class="line">cd /</span><br><span class="line">ls /media</span><br><span class="line">rm -fr /media/whatever/*</span><br><span class="line">tar -xvpzf /path/to/backup.tar.gz -C /media/whatever --numeric-owner</span><br><span class="line">mkdir /media/whatever/proc /media/whatever/sys /media/whatever/mnt /media/whatever/media</span><br><span class="line">for f in dev dev/pts proc ; do mount --bind /$f /media/whatever/$f ; done</span><br><span class="line">chroot /media/whatever</span><br><span class="line">dpkg-reconfigure grub-pc</span><br><span class="line">reboot</span><br></pre></td></tr></table></figure>
+<h3 id="%E2%85%B1.-command-skills" tabindex="-1">Ⅱ. Command Skills<a class="header-anchor" href="#%E2%85%B1.-command-skills" aria-hidden="true"></a></h3>
+<h4 id="1.-software" tabindex="-1">1. Software<a class="header-anchor" href="#1.-software" aria-hidden="true"></a></h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">apt-cache search package  # 查找软件库中的包</span><br><span class="line">apt-cache show package  # 显示包信息</span><br><span class="line">apt-cache depends package  # 查询包依赖哪些包</span><br><span class="line">apt-cache rdepends package  # 查询包被哪些包依赖</span><br><span class="line">sudo apt-get update  # 更新包列表</span><br><span class="line">sudo apt-get upgrade  # 升级所有包</span><br><span class="line">sudo apt-get dist-upgrade  # 升级所有包，更新依赖关系</span><br><span class="line">sudo apt-get install -f  # 修复所有包依赖关系</span><br><span class="line">sudo apt-get install package  # 安装包</span><br><span class="line">sudo apt-get install package --reinstall  # 重新安装包</span><br><span class="line">sudo apt-get remove package  # 卸载包</span><br><span class="line">sudo apt-get purge package  # 卸载包，删除配置文件</span><br><span class="line">sudo apt-get autoremove  # 卸载孤立包</span><br><span class="line">sudo apt-get autoclean  # 清理旧版本包缓存</span><br><span class="line">sudo apt-get clean  # 清理所有包缓存</span><br><span class="line">sudo apt-get check  # 检查所有包依赖关系</span><br><span class="line"></span><br><span class="line">dpkg -L package  # 查看包安装内容</span><br><span class="line">dpkg -S filename  # 查找文件属于哪个包</span><br><span class="line">dpkg -l  # 查看已安装包列表</span><br><span class="line">dpkg -l | grep package  # 查看已安装相关包列表</span><br></pre></td></tr></table></figure>
+<h4 id="2.-system" tabindex="-1">2. System<a class="header-anchor" href="#2.-system" aria-hidden="true"></a></h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line">uname -a  # 查看内核</span><br><span class="line">lsb_release -a  # 查看系统版本</span><br><span class="line">lscpu  # 查看CPU信息</span><br><span class="line">lsmod  # 查看内核模块信息</span><br><span class="line">lspci  # 查看PCI设备</span><br><span class="line">lsusb  # 查看USB设备</span><br><span class="line">lsblk  # 查看块设备</span><br><span class="line">sudo lshw  # 显示硬件信息</span><br><span class="line">sudo dmidecode  # 显示硬件信息</span><br><span class="line">cat /proc/cpuinfo  # 查看CPU信息</span><br><span class="line">cat /proc/interrupts  # 查看中断信息</span><br><span class="line">cat /proc/meminfo  # 查看内存使用信息</span><br><span class="line">cat /proc/net/dev  # 查看网络统计信息</span><br><span class="line">cat /proc/mounts  # 查看文件系统信息</span><br><span class="line">cat /proc/swaps  # 查看swap使用信息</span><br><span class="line">cat /proc/mdstat  # 查看软raid阵列信息</span><br><span class="line">cat /proc/scsi/scsi  # 查看硬raid阵列信息</span><br><span class="line">uptime  # 显示系统运行时间</span><br><span class="line">date  # 显示系统日期</span><br><span class="line">last  # 查看系统登录情况</span><br><span class="line">lastlog  # 查看用户登录情况</span><br><span class="line">ulimit -a  # 查看系统限制</span><br><span class="line">ipcs -l  # 查看内核限制</span><br><span class="line"></span><br><span class="line">blkid  # 查看硬盘分区ID</span><br><span class="line">sudo fdisk -l  # 查看硬盘分区</span><br><span class="line">sudo fdisk /dev/sda1  # 硬盘分区</span><br><span class="line">sudo mkfs -t ext3 /dev/sda1  # 硬盘格式化，ext3分区</span><br><span class="line">sudo mkfs -t vfat /dev/sda1  # 硬盘格式化，fat32分区</span><br><span class="line">sudo mkfs -t ntfs /dev/sda1  # 硬盘格式化，ntfs分区</span><br><span class="line">sudo mount -t ntfs -o nls=utf8,umask=0 /dev/sdb1 /mnt/c  # 只读挂载ntfs分区</span><br><span class="line">sudo mount -t ntfs-3g -o locale=zh_CN.utf8,umask=0 /dev/sdb1 /mnt/c  # 可写挂载ntfs分区</span><br><span class="line">sudo mount -t vfat -o iocharset=utf8,umask=0 /dev/sda1 /mnt/c  # 挂载fat32分区</span><br><span class="line">sudo mount -t smbfs -o username=xxx,password=xxx,iocharset=utf8 //192.168.1.1/share /mnt/share  # 挂载网络共享文件</span><br><span class="line">sudo mount -t iso9660 -o loop,utf8 xxx.iso /mnt/iso  # 挂载ISO文件</span><br><span class="line">sudo umount /dev/sda1  # 卸载分区</span><br><span class="line">df -h  # 查看硬盘剩余空间</span><br><span class="line">sudo du -hs dirname  # 查看目录占用空间</span><br><span class="line"></span><br><span class="line">free -h  # 查看内存使用情况</span><br><span class="line">top  # 动态显示进程执行情况</span><br><span class="line">ps -A  # 查看当前进程</span><br><span class="line">ps -ef | grep srvname  # 查看进程执行情况</span><br><span class="line">pstree  # 查看当前进程树</span><br><span class="line">sudo kill PID  # 中止进程</span><br><span class="line">sudo kill -9 PID  # 强制中止进程</span><br><span class="line">sudo lsof -p PID  # 查看进程打开的文件</span><br><span class="line">sudo lsof filename  # 查看打开文件的进程</span><br><span class="line">sudo lsof -i :portname  # 查看使用端口的进程</span><br><span class="line">nohup program &amp;  # 后台运行程序</span><br><span class="line"></span><br><span class="line">ifconfig  # 查看IP地址</span><br><span class="line">ping IP  # 查看IP地址连接情况</span><br><span class="line">host hostname  # 查看主机名称对应的IP地址</span><br><span class="line">sudo route -n  # 查看路由信息</span><br><span class="line">sudo netstat -atnp  # 查看网络连接状况</span><br><span class="line">sudo dhclient  # 使用DHCP协定从服务器获取IP地址</span><br><span class="line">sudo iptables -t nat -L  # 查看nat规则</span><br><span class="line">sudo iptables -L -n  # 查看filter规则</span><br><span class="line"></span><br><span class="line">service --status-all  # 查看全部服务状态</span><br><span class="line">sudo service srvname start  # 启动服务</span><br><span class="line">sudo service srvname stop  # 停止服务</span><br><span class="line">sudo service srvname restart  # 重启服务</span><br><span class="line">sudo service srvname status  # 查看服务状态</span><br><span class="line"></span><br><span class="line">sudo adduser username  # 增加用户，创建用户目录</span><br><span class="line">sudo useradd username  # 增加用户</span><br><span class="line">sudo deluser username  # 删除用户，删除用户目录</span><br><span class="line">sudo userdel username  # 删除用户</span><br><span class="line">sudo addgroup groupname  # 增加用户组</span><br><span class="line">sudo groupadd groupname  # 增加用户组</span><br><span class="line">sudo delgroup groupname  # 删除用户组</span><br><span class="line">sudo groupdel groupname  # 删除用户组</span><br><span class="line">sudo passwd username  # 修改用户密码</span><br><span class="line">sudo chfn username  # 修改用户资料</span><br><span class="line">sudo gpasswd –a username groupname  # 添加用户至用户组</span><br><span class="line">sudo gpasswd –d username groupname  # 从用户组删除用户</span><br><span class="line">sudo usermod -L username  # 锁定用户</span><br><span class="line">sudo usermod -U username  # 解锁用户</span><br><span class="line">sudo groupmod -n groupname groupname  # 重命名用户组</span><br><span class="line">groups username  # 查看用户所属的用户组</span><br><span class="line">newgrp groupname  # 切换到用户组</span><br><span class="line">su username  # 切换用户</span><br><span class="line">sudo su  # 切换root用户</span><br><span class="line">whoami  # 查看当前用户</span><br><span class="line">who  # 查看当前用户登录信息</span><br><span class="line"></span><br><span class="line">sudo shutdown -h now  # 关机</span><br><span class="line">sudo halt  # 关机</span><br><span class="line">sudo shutdown -r now  # 重启</span><br><span class="line">sudo reboot  # 重启</span><br></pre></td></tr></table></figure>
+<h4 id="3.-file" tabindex="-1">3. File<a class="header-anchor" href="#3.-file" aria-hidden="true"></a></h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">touch filename  # 创建空文件</span><br><span class="line">cat filename  # 一屏查看文件</span><br><span class="line">more filename  # 分页查看文件</span><br><span class="line">less filename  # 可控分页查看文件</span><br><span class="line">cat -n filename  # 带行号查看文件</span><br><span class="line">grep string filename  # 根据字符串匹配来查看文件</span><br><span class="line">grep -l -r string dirname  # 显示内容包含字符串的文件名</span><br><span class="line">grep -L -r string dirname  # 显示内容不包含字符串的文件名</span><br><span class="line">find dirname -name filename  # 查找文件</span><br><span class="line">head -n 2 filename  # 显示文件开始两行的内容</span><br><span class="line">tail -n 2 filename  # 显示文件末尾两行的内容</span><br><span class="line"></span><br><span class="line">pwd  # 查看当前目录</span><br><span class="line">cd dirname  # 切换目录，~为home，/为root，.为current，..为parent，-为previous</span><br><span class="line">ls dirname  # 查看目录内容</span><br><span class="line">ls -a dirname  # 查看目录内容，包含隐藏文件</span><br><span class="line">ls -l dirname  # 详细查看目录内容</span><br><span class="line">mkdir -pv dirname  # 递归创建目录</span><br><span class="line">rm -fr dirname  # 递归删除文件/目录</span><br><span class="line">mv srcname distname  # 移动文件/目录，可用来重命名</span><br><span class="line">cp srcname distname  # 复制文件</span><br><span class="line">cp -r srcname distname  # 复制目录</span><br><span class="line">file filename  # 查看文件类型</span><br><span class="line">stat filename  # 查看文件时间</span><br><span class="line">diff filename filename  # 对比文件差异</span><br><span class="line">ln -s srcname distname  # 建立软连接</span><br><span class="line"></span><br><span class="line">tar -zcvf xxx.tar.gz dirname  # 压缩目录为xxx.tar.gz</span><br><span class="line">tar -xf xxx.tar.gz -C dirname  # 解压缩xxx.tar.gz到目录</span><br><span class="line"></span><br><span class="line">sudo chown username:groupname filename  # 改变文件/目录的所属用户和组</span><br><span class="line">sudo chown -R username:groupname dirname  # 改变目录及其内容的所属用户和组</span><br><span class="line">sudo chmod u+rwx filename  # 修改文件/目录权限，用户添加读写运行权限</span><br><span class="line">sudo chmod g+r filename  # 修改文件/目录权限，组成员添加读权限</span><br><span class="line">sudo chmod o+r filename  # 修改文件/目录权限，其他用户添加读权限</span><br><span class="line">sudo chmod a+w filename  # 修改文件/目录权限，所有用户添加写权限</span><br><span class="line">sudo chmod 777 filename  # 修改文件/目录权限，所有用户添加读写运行权限</span><br><span class="line">sudo chmod go-rwx filename  # 修改文件/目录权限，删除组成员与其他用户对目录的读写执行权限</span><br></pre></td></tr></table></figure>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/markdown-it-texmath/css/texmath.min.css">
+
+      
+        <div class="mdui-m-y-2 mdui-text-center">
+          <button class="mdui-fab mdui-color-deep-orange mdui-text-color-white mdui-ripple" mdui-dialog="{target: '#donate'}" mdui-tooltip="{content: '打赏', position: 'top'}"><i class="mdui-icon material-icons">thumb_up</i></button>
+        </div>
+      
+      <blockquote>
+        
+          <strong>本文遵循 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">CC BY-NC-SA 4.0</a> 许可协议</strong><br>
+        
+        <strong>本文链接：</strong><br><a href="https://www.niemingzhao.top/2019/01/01/Ubuntu-Server-Settings/">https://www.niemingzhao.top/2019/01/01/Ubuntu-Server-Settings/</a>
+      </blockquote>
+    </div>
+    <footer class="mdui-card-actions">
+      
+        <a class="mdui-ripple article_categories-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>
+      
+      
+        <a class="mdui-ripple article_tags-link" href="/tags/Ubuntu/" rel="tag">Ubuntu</a>
+      
+    </footer>
+    
+      <div class="mdui-dialog" id="donate">
+        <div class="mdui-tab mdui-tab-centered">
+          
+            <a href="#donate-0" class="mdui-ripple">支付宝</a>
+          
+            <a href="#donate-1" class="mdui-ripple">微信支付</a>
+          
+        </div>
+        
+        
+          <div id="donate-0" class="mdui-p-a-2 mdui-typo mdui-text-center">
+            
+              <img src="/images/alipay.jpg" style="width: 300px;">
+            
+          </div>
+        
+          <div id="donate-1" class="mdui-p-a-2 mdui-typo mdui-text-center">
+            
+              <img src="/images/wechat.jpg" style="width: 300px;">
+            
+          </div>
+        
+      </div>
+    
+  </article>
+  
+<script src="//cdn.bootcdn.net/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+  <script>$("#main article .mdui-card-content img.fancybox").on("click",function(e){$.fancybox.open({src:$(this).attr("src")});});</script>
+
+
+  <nav id="paginator">
+    
+      <a rel="prev" class="extend prev" href="/2019/01/01/Reverse-Proxy-Script-for-Cloudflare-Workers/">
+        <button aria-label="prev" class="mdui-btn mdui-btn-raised mdui-btn-icon mdui-color-theme-accent mdui-ripple"><i class="mdui-icon material-icons">arrow_back</i></button>
+        <span class="mdui-p-x-3" mdui-tooltip="{content: 'Reverse Proxy Script for Cloudflare Workers'}">上一篇</span>
+      </a>
+    
+    <div class="spacer"></div>
+    
+      <a rel="next" class="extend next" href="/2019/01/01/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E7%A4%BA%E4%BE%8B/">
+        <span class="mdui-p-x-3" mdui-tooltip="{content: '文章排版示例'}">下一篇</span>
+        <button aria-label="next" class="mdui-btn mdui-btn-raised mdui-btn-icon mdui-color-theme-accent mdui-ripple"><i class="mdui-icon material-icons">arrow_forward</i></button>
+      </a>
+    
+  </nav>
+
+
+  <div id="comment" class="mdui-m-t-5">
+    <div id="gitalk-container"></div>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script>
+  var gitalk = new Gitalk({
+    clientID: 'c3d07683889a30cce9f4',
+    clientSecret: '4075822d529574759bcaf8f1b55618cf6f1421f9',
+    repo: 'niemingzhao.github.io',
+    owner: 'niemingzhao',
+    admin: ['niemingzhao'],
+    id: 'adbe3357-8eff-f406-dfbf-265d2192bd22' || location.pathname,
+    distractionFreeMode: false
+  });
+  gitalk.render('gitalk-container');
+</script>
+
+  </div>
+
+
+
+  <div style="position: fixed !important; right: 16px; top: 30%;">
+    <button class="mdui-fab mdui-fab-mini mdui-ripple" mdui-menu="{target: '#toc'}"><i class="mdui-icon material-icons">toc</i></button>
+    <ul class="mdui-menu" id="toc">
+      <li class="mdui-menu-item" disabled><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%85%B0.-initial-settings"><span class="toc-text">Ⅰ. Initial Settings</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1.-change-source-list-(optional)"><span class="toc-text">1. Change Source List (Optional)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2.-update-system"><span class="toc-text">2. Update System</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3.-add-new-user"><span class="toc-text">3. Add New User</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4.-enable-ssh-remote-login"><span class="toc-text">4. Enable SSH Remote Login</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5.-install-basic-environment"><span class="toc-text">5. Install Basic Environment</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6.-safeguard-system"><span class="toc-text">6. Safeguard System</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7.-cleanup-system"><span class="toc-text">7. Cleanup System</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8.-backup-system"><span class="toc-text">8. Backup System</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%85%B1.-command-skills"><span class="toc-text">Ⅱ. Command Skills</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1.-software"><span class="toc-text">1. Software</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2.-system"><span class="toc-text">2. System</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3.-file"><span class="toc-text">3. File</span></a></li></ol></li></ol></li>
+    </ul>
+  </div>
+
+
+</main>
+  <footer id="footer" class="mdui-m-t-5 mdui-p-y-3 mdui-color-theme">
+  <div class="mdui-p-y-0 mdui-text-center">
+    
+    
+    
+    
+      <a href="https://weibo.com/2360828682/profile" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xec7e;</i></a>
+    
+    
+    
+    
+      <a href="https://github.com/niemingzhao" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe7ab;</i></a>
+    
+    
+    
+      <a href="https://www.zhihu.com/people/nie-1-58" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe6c0;</i></a>
+    
+    
+    
+      <a href="tencent://message/?uin=1432440963&Menu=yes" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe651;</i></a>
+    
+    
+  </div>
+  <div class="mdui-p-y-1 mdui-text-center">
+    Copyright &copy; 2016 - 2026 聂明照<br>
+    Powered by <a href="https://hexo.io/" target="_blank" class="mdui-text-color-theme-accent">Hexo</a> | Theme - <a href="https://github.com/niemingzhao/niemingzhao.github.io/tree/theme" target="_blank" class="mdui-text-color-theme-accent">default</a><br>京公网安备<a href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502053272" target="_blank" class="mdui-text-color-theme-accent">11010502053272</a>号 | 京ICP备<a href="https://beian.miit.gov.cn" target="_blank" class="mdui-text-color-theme-accent">2023020255</a>号
+    <br>
+      <span id="busuanzi_container_site_pv" style="display: none;"><i class="iconfont">&#xe7fd;</i> <span id="busuanzi_value_site_pv"></span></span> &nbsp;&nbsp;
+      <span id="busuanzi_container_site_uv" style="display: none;"><i class="iconfont">&#xe601;</i> <span id="busuanzi_value_site_uv"></span></span>
+    
+  </div>
+</footer>
+
+  <button id="gotop" class="mdui-fab mdui-fab-fixed mdui-fab-hide mdui-color-theme-accent mdui-ripple"><i class="mdui-icon material-icons">arrow_upward</i></button>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+<script src="/js/mdui.js"></script>
+<script src="/js/script.js"></script>
+
+  
+<script src="/custom.js"></script>
+
+</body>
+</html>

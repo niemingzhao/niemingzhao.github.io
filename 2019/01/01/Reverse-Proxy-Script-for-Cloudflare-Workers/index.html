@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="renderer" content="webkit">
+
+  
+  <title>Reverse Proxy Script for Cloudflare Workers | 聂明照的博客</title>
+
+  <link rel="shortcut icon" href="/images/favicon.jpg">
+  <link rel="alternate" href="/atom.xml" title="聂明照的博客" type="application/atom+xml">
+  <meta name="description" content="This is a reverse proxy script running on cloudflare workers, which is made and used by myself. It is mainly used to assist in consulting and downloading learning materials.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Reverse Proxy Script for Cloudflare Workers">
+<meta property="og:url" content="https://www.niemingzhao.top/2019/01/01/Reverse-Proxy-Script-for-Cloudflare-Workers/index.html">
+<meta property="og:site_name" content="聂明照的博客">
+<meta property="og:description" content="This is a reverse proxy script running on cloudflare workers, which is made and used by myself. It is mainly used to assist in consulting and downloading learning materials.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-01-01T00:00:00.000Z">
+<meta property="article:modified_time" content="2026-02-08T11:30:13.900Z">
+<meta property="article:author" content="聂明照">
+<meta property="article:tag" content="Cloudflare">
+<meta name="twitter:card" content="summary">
+
+  <meta name="keywords" content=",Cloudflare">
+  <meta name="format-detection" content="telephone=no,email=no">
+  <meta name="theme-color" content="#9C27B0">
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="聂明照的博客">
+  <meta name="msapplication-starturl" content="https://www.niemingzhao.top/2019/01/01/Reverse-Proxy-Script-for-Cloudflare-Workers/">
+  <meta name="msapplication-navbutton-color" content="#9C27B0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="聂明照的博客">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="apple-touch-icon" href="/images/favicon.jpg">
+
+  
+    <link rel="canonical" href="https://www.niemingzhao.top/2019/01/01/Reverse-Proxy-Script-for-Cloudflare-Workers/">
+  
+
+  <meta name="google-site-verification" content="fXjtlIfaDc_X-0P11rO3bEp1Nk4IKXphoJv0GqGZCco">
+  <meta name="baidu-site-verification" content="I3t1wfwZvd">
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create','UA-139531378-1','auto');ga('send','pageview');
+</script>
+
+  <script>
+  var _hmt = _hmt || [];
+  (function() {var hm = document.createElement('script');
+  hm.src = '//hm.baidu.com/hm.js?22e4d3b73c21ec2f0e1b4f3ff78c9a9c';
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+  
+
+  
+<link rel="stylesheet" href="/css/mdui.css">
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/custom.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="mdui-appbar-with-toolbar mdui-theme-primary-brown mdui-theme-accent-blue">
+  <script>var a=localStorage.getItem("mdui-theme-layout-dark");if(a){document.getElementsByTagName("body")[0].className+=" mdui-theme-layout-dark"};</script>
+  <script>if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){document.getElementsByTagName("body")[0].className+=" mdui-theme-layout-dark"};</script>
+  <script>var a=localStorage.getItem("mdui-drawer-close");if(!a){document.getElementsByTagName("body")[0].className+=" mdui-drawer-body-left"};</script>
+  <header id="header" class="mdui-appbar mdui-appbar-fixed mdui-appbar-scroll-hide mdui-appbar-inset">
+  <div class="mdui-toolbar mdui-color-theme">
+    <a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-drawer="{target: '#sidebar', swipe: true}"><i class="mdui-icon material-icons">menu</i></a>
+    <a href="/" class="mdui-typo-headline">聂明照的博客</a>
+    <div class="mdui-toolbar-spacer"></div>
+    <a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-dialog="{target: '#search'}" mdui-tooltip="{content: '搜索'}"><i class="mdui-icon material-icons">search</i></a>
+    <a href="/atom.xml" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: 'RSS'}"><i class="mdui-icon material-icons">rss_feed</i></a>
+  </div>
+</header>
+<div class="mdui-dialog" id="search">
+  
+    <div class="search-form">
+      <input type="search" class="search-form-input" placeholder="请输入关键字">
+    </div>
+    <div class="search-result" data-resource="/search.xml"></div>
+  
+</div>
+
+  <aside id="sidebar" class="mdui-drawer mdui-drawer-full-height">
+  <script>var a=localStorage.getItem("mdui-drawer-close");if(a){document.getElementById("sidebar").className+=" mdui-drawer-close"};</script>
+  <div class="mdui-grid-tile">
+    <img src="/images/banner.jpg" style="height: 160px;">
+    <img src="/images/avatar.jpg" class="avatar-animation" style="position: absolute; top: 10%; left: 24px; width: 64px; height: 64px; border: 2px solid #fff; border-radius: 50%;">
+    <div class="mdui-grid-tile-actions">
+      <div class="mdui-grid-tile-text">
+        <div class="mdui-grid-tile-title">聂明照</div>
+        <div class="mdui-grid-tile-subtitle"><i class="mdui-icon material-icons">art_track</i>桃李不言，下自成蹊</div>
+      </div>
+      
+        <div class="mdui-grid-tile-buttons">
+          <a href="mailto:1432440963@qq.com" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: '1432440963@qq.com'}"><i class="mdui-icon material-icons">email</i></a>
+        </div>
+      
+    </div>
+  </div>
+
+  <div class="mdui-list" mdui-collapse="{accordion: true}">
+    <a href="/" class="mdui-list-item mdui-ripple">
+      <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-blue">home</i>
+      <div class="mdui-list-item-content">主页</div>
+    </a>
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-0");if(a){document.getElementsByClassName("mdui-collapse-item")[0].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-deep-orange">archive</i>
+        <div class="mdui-list-item-content">归档</div>
+        <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        
+        <a class="mdui-ripple sidebar_archives-link" href="/archives/2020/10/">十月 2020<span class="mdui-ripple sidebar_archives-count">2</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2019/06/">六月 2019<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2019/01/">一月 2019<span class="mdui-ripple sidebar_archives-count">5</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2017/01/">一月 2017<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2016/10/">十月 2016<span class="mdui-ripple sidebar_archives-count">2</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2016/08/">八月 2016<span class="mdui-ripple sidebar_archives-count">2</span></a>
+        
+      </div>
+    </div>
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-1");if(a){document.getElementsByClassName("mdui-collapse-item")[1].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-green">class</i>
+        <div class="mdui-list-item-content">分类</div>
+        <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        
+        <a class="mdui-ripple sidebar_archives-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术<span class="mdui-ripple sidebar_archives-count">9</span></a><a class="mdui-ripple sidebar_archives-link" href="/categories/%E6%96%87%E7%B2%B9/">文粹<span class="mdui-ripple sidebar_archives-count">2</span></a>
+        
+      </div>
+    </div>
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-2");if(a){document.getElementsByClassName("mdui-collapse-item")[2].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-brown">bookmark</i>
+        <div class="mdui-list-item-content">标签</div>
+        <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        
+        <a class="mdui-ripple sidebar_archives-link" href="/tags/Cloudflare/" rel="tag">Cloudflare<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Git/" rel="tag">Git<span class="mdui-ripple sidebar_archives-count">2</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/HomeLab/" rel="tag">HomeLab<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Java/" rel="tag">Java<span class="mdui-ripple sidebar_archives-count">2</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Markdown/" rel="tag">Markdown<span class="mdui-ripple sidebar_archives-count">3</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Self-Hosted/" rel="tag">Self-Hosted<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Ubuntu/" rel="tag">Ubuntu<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/%E5%8F%A4%E6%96%87/" rel="tag">古文<span class="mdui-ripple sidebar_archives-count">2</span></a>
+        
+      </div>
+    </div>
+    <a href="/about" class="mdui-list-item mdui-ripple">
+      <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-purple">person</i>
+      <div class="mdui-list-item-content">关于</div>
+    </a>
+  </div>
+
+  <div class="mdui-divider"></div>
+
+  <div class="mdui-list" mdui-collapse="{accordion: true}">
+    
+      <a href="/timeline" class="mdui-list-item mdui-ripple">时间轴</a>
+    
+      <a href="/tagcloud" class="mdui-list-item mdui-ripple">标签云</a>
+    
+      <a href="/gallery" class="mdui-list-item mdui-ripple">相册</a>
+    
+      <a href="/tv" class="mdui-list-item mdui-ripple">电视直播</a>
+    
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-3");if(a){document.getElementsByClassName("mdui-collapse-item")[3].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <div class="mdui-list-item-content">友情链接</div>
+        <i class="mdui-list-item-icon mdui-icon material-icons">link</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        
+          <a href="//home.niemingzhao.top" target="_blank" class="mdui-list-item mdui-p-l-2 mdui-text-color-theme-accent mdui-ripple" style="justify-content: center;">自建服务导航</a>
+        
+        
+      </div>
+    </div>
+  </div>
+</aside>
+
+  <main id="main" class="mdui-m-t-5 fadeIn animated">
+  
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
+
+  <style>#main article .mdui-card-content .center-block{display:block!important;margin-right:auto!important;margin-left:auto!important}</style>
+  <style>#main article .mdui-card-content .text-center{text-align:center!important}</style>
+  <article class="mdui-card mdui-m-b-5">
+    <header class="mdui-card-media">
+      <img src="//images.niemingzhao.top/image/2022/05/25/wu_1g3rhoja8ioo11kmdd81knm11si6.png" style="max-height: 240px;">
+      <div class="mdui-card-media-covered">
+        <div class="mdui-card-primary">
+          <div class="mdui-card-primary-title">Reverse Proxy Script for Cloudflare Workers</div>
+          <div class="mdui-card-primary-subtitle"><i class="iconfont">&#xe697;</i> 2019-01-01 / <i class="iconfont">&#xe601;</i> 聂明照 &nbsp;&nbsp; <span id="busuanzi_container_page_pv" style="display: none;"><i class="iconfont">&#xe7fd;</i> <span id="busuanzi_value_page_pv"></span></span></div>
+        </div>
+      </div>
+      <div class="mdui-card-menu">
+        
+          <button class="mdui-btn mdui-btn-icon mdui-text-color-white" mdui-menu="{target: '#qrcode', align: 'right'}"><i class="mdui-icon material-icons">devices</i></button>
+          <ul class="mdui-menu" id="qrcode">
+            
+              <li class="mdui-menu-item"><a class="mdui-text-center mdui-ripple">发送到手机</a></li>
+            
+            <li class="mdui-menu-item" disabled>
+              
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAAC5klEQVR42u3aUXLiMBAEUO5/6ewBUphuSWRt6fmLqoCtJ6qYaHpeP0deL2xsbGxsbGxsbOxbsl/x9ftT717/fn/+rHf3effXYs3Y2NjYW7M//PQH73m3oOvNyrdpfs3Y2NjYJ7Cvy8n1I5P3J0WrZRd3w8bGxsYuDwnz98TGxsbG/nYBywtS+7otkNjY2NjYeYPm+sDQBgxtDPDfemnY2NjYt2e3EewdXv9pvo2NjY19Y3Y9whiHvnkYPBb3/unMKTY2NvaN2XlhyA8nyWGmbU6NrRMbGxv7NHZSMNqGfnKftnU1FjNgY2Nj78rOi818SRtb9NihpW4qYWNjYz+cff2vf17wrrcj/1RStPItxsbGxt6b3d46PxLk5Wdm0GdBvo2NjY39cHZbwOoDwKJGfz6CWTSVsLGxsTdiX4PHIoQ8vh1sEsXBMDY2Nvbe7LzRP4NfG+7mYzrY2NjYZ7LHWkXfiHLbwvbhKdjY2Nhbs2dGKvNFzAxQzkS82NjY2Cew8zZN3txv2/1tw6i9MzY2Nvau7DYYaGODtuWUP7Ed+sTGxsY+gZ0P5dTHgKHtSLYmjwqwsbGxd2XXTfbpg0H+rPbosqyXho2Njf0o9ocxl3iMsj1mrAqSF8ycYmNjYz+cPROgjpWimad/JRXBxsbG3oI9H8qOHQ9Whc1RYICNjY29NTs5BuSN/nYQZ+ZQVIQc2NjY2AewBwPUReFufvBoW1rY2NjYp7Hz0ZwclscGYy2n6GvAxsbGPoB9vRFjZW+s8LRXtGXY2NjYm7Lbq40TkiKUhAH5gSdqKmFjY2NvxJ4vEjMLmgl0v5JvY2NjYz+WnbdpxopT3gBqBzqnChg2Njb2dux2wDEJdPO21HxTabCAYWNjYx/PbmPXfNGrvgZsbGxs7LZx38bD7WfzwxI2Njb2aex6nHFoiWPjQWPNJmxsbOxz2KsaNzkp2co2fvhivo2NjY19Y/Y5FzY2NjY2NjY2NvZtrn/EEMOm0dJc4AAAAABJRU5ErkJggg==">
+              
+            </li>
+          </ul>
+        
+        
+          <button class="mdui-btn mdui-btn-icon mdui-text-color-white" mdui-menu="{target: '#share_menu', align: 'right'}"><i class="mdui-icon material-icons">share</i></button>
+          <ul class="mdui-menu" id="share_menu">
+            <li class="mdui-menu-item">
+              <a href="https://service.weibo.com/share/share.php?appkey=&title=Reverse Proxy Script for Cloudflare Workers&url=https://www.niemingzhao.top/2019/01/01/Reverse-Proxy-Script-for-Cloudflare-Workers/&pic=https://www.niemingzhao.top/images/favicon.jpg&searchPic=false&style=simple" target="_blank" class="mdui-ripple">分享到 Weibo</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://twitter.com/intent/tweet?text=Reverse Proxy Script for Cloudflare Workers&url=https://www.niemingzhao.top/2019/01/01/Reverse-Proxy-Script-for-Cloudflare-Workers/&via=聂明照" target="_blank" class="mdui-ripple">分享到 Twitter</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.niemingzhao.top/2019/01/01/Reverse-Proxy-Script-for-Cloudflare-Workers/" target="_blank" class="mdui-ripple">分享到 Facebook</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://plus.google.com/share?url=https://www.niemingzhao.top/2019/01/01/Reverse-Proxy-Script-for-Cloudflare-Workers/" target="_blank" class="mdui-ripple">分享到 Google+</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.niemingzhao.top/2019/01/01/Reverse-Proxy-Script-for-Cloudflare-Workers/&title=Reverse Proxy Script for Cloudflare Workers" target="_blank" class="mdui-ripple">分享到 LinkedIn</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://connect.qq.com/widget/shareqq/index.html?site=聂明照的博客&title=Reverse Proxy Script for Cloudflare Workers&pics=https://www.niemingzhao.top/images/favicon.jpg&url=https://www.niemingzhao.top/2019/01/01/Reverse-Proxy-Script-for-Cloudflare-Workers/" target="_blank" class="mdui-ripple">分享到 QQ</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://telegram.me/share/url?url=https://www.niemingzhao.top/2019/01/01/Reverse-Proxy-Script-for-Cloudflare-Workers/&text=Reverse Proxy Script for Cloudflare Workers" target="_blank" class="mdui-ripple">分享到 Telegram</a>
+            </li>
+          </ul>
+        
+      </div>
+    </header>
+    <div class="mdui-card-content mdui-typo">
+      <p>This is a reverse proxy script running on cloudflare workers, which is made and used by myself. It is mainly used to assist in consulting and downloading learning materials.</p>
+<span id="more"></span>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Proxy-Workers</span></span><br><span class="line"><span class="comment"> * Version: 1.0.0</span></span><br><span class="line"><span class="comment"> * Description: Reverse Proxy Script for Cloudflare Workers.</span></span><br><span class="line"><span class="comment"> * Author: niemingzhao (https://github.com/niemingzhao)</span></span><br><span class="line"><span class="comment"> * Date: 2022-05-21</span></span><br><span class="line"><span class="comment"> * License: GPLv3</span></span><br><span class="line"><span class="comment"> * Warning: THIS SCRIPT IS FOR LEARNING PURPOSES ONLY!</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">BLOCKED_REGION</span> = [<span class="string">&quot;AD&quot;</span>, <span class="string">&quot;AE&quot;</span>, <span class="string">&quot;AF&quot;</span>, <span class="string">&quot;AG&quot;</span>, <span class="string">&quot;AI&quot;</span>, <span class="string">&quot;AL&quot;</span>, <span class="string">&quot;AM&quot;</span>, <span class="string">&quot;AO&quot;</span>, <span class="string">&quot;AR&quot;</span>, <span class="string">&quot;AT&quot;</span>, <span class="string">&quot;AU&quot;</span>, <span class="string">&quot;AZ&quot;</span>, <span class="string">&quot;BB&quot;</span>, <span class="string">&quot;BD&quot;</span>, <span class="string">&quot;BE&quot;</span>, <span class="string">&quot;BF&quot;</span>, <span class="string">&quot;BG&quot;</span>, <span class="string">&quot;BH&quot;</span>, <span class="string">&quot;BI&quot;</span>, <span class="string">&quot;BJ&quot;</span>, <span class="string">&quot;BL&quot;</span>, <span class="string">&quot;BM&quot;</span>, <span class="string">&quot;BN&quot;</span>, <span class="string">&quot;BO&quot;</span>, <span class="string">&quot;BR&quot;</span>, <span class="string">&quot;BS&quot;</span>, <span class="string">&quot;BW&quot;</span>, <span class="string">&quot;BY&quot;</span>, <span class="string">&quot;BZ&quot;</span>, <span class="string">&quot;CA&quot;</span>, <span class="string">&quot;CF&quot;</span>, <span class="string">&quot;CG&quot;</span>, <span class="string">&quot;CH&quot;</span>, <span class="string">&quot;CK&quot;</span>, <span class="string">&quot;CL&quot;</span>, <span class="string">&quot;CM&quot;</span>, <span class="string">&quot;CO&quot;</span>, <span class="string">&quot;CR&quot;</span>, <span class="string">&quot;CS&quot;</span>, <span class="string">&quot;CU&quot;</span>, <span class="string">&quot;CY&quot;</span>, <span class="string">&quot;CZ&quot;</span>, <span class="string">&quot;DE&quot;</span>, <span class="string">&quot;DJ&quot;</span>, <span class="string">&quot;DK&quot;</span>, <span class="string">&quot;DO&quot;</span>, <span class="string">&quot;DZ&quot;</span>, <span class="string">&quot;EC&quot;</span>, <span class="string">&quot;EE&quot;</span>, <span class="string">&quot;EG&quot;</span>, <span class="string">&quot;ES&quot;</span>, <span class="string">&quot;ET&quot;</span>, <span class="string">&quot;FI&quot;</span>, <span class="string">&quot;FJ&quot;</span>, <span class="string">&quot;FR&quot;</span>, <span class="string">&quot;GA&quot;</span>, <span class="string">&quot;GB&quot;</span>, <span class="string">&quot;GD&quot;</span>, <span class="string">&quot;GE&quot;</span>, <span class="string">&quot;GF&quot;</span>, <span class="string">&quot;GH&quot;</span>, <span class="string">&quot;GI&quot;</span>, <span class="string">&quot;GM&quot;</span>, <span class="string">&quot;GN&quot;</span>, <span class="string">&quot;GR&quot;</span>, <span class="string">&quot;GT&quot;</span>, <span class="string">&quot;GU&quot;</span>, <span class="string">&quot;GY&quot;</span>, <span class="string">&quot;HK&quot;</span>, <span class="string">&quot;HN&quot;</span>, <span class="string">&quot;HT&quot;</span>, <span class="string">&quot;HU&quot;</span>, <span class="string">&quot;ID&quot;</span>, <span class="string">&quot;IE&quot;</span>, <span class="string">&quot;IL&quot;</span>, <span class="string">&quot;IN&quot;</span>, <span class="string">&quot;IQ&quot;</span>, <span class="string">&quot;IR&quot;</span>, <span class="string">&quot;IS&quot;</span>, <span class="string">&quot;IT&quot;</span>, <span class="string">&quot;JM&quot;</span>, <span class="string">&quot;JO&quot;</span>, <span class="string">&quot;JP&quot;</span>, <span class="string">&quot;KE&quot;</span>, <span class="string">&quot;KG&quot;</span>, <span class="string">&quot;KH&quot;</span>, <span class="string">&quot;KP&quot;</span>, <span class="string">&quot;KR&quot;</span>, <span class="string">&quot;KT&quot;</span>, <span class="string">&quot;KW&quot;</span>, <span class="string">&quot;KZ&quot;</span>, <span class="string">&quot;LA&quot;</span>, <span class="string">&quot;LB&quot;</span>, <span class="string">&quot;LC&quot;</span>, <span class="string">&quot;LI&quot;</span>, <span class="string">&quot;LK&quot;</span>, <span class="string">&quot;LR&quot;</span>, <span class="string">&quot;LS&quot;</span>, <span class="string">&quot;LT&quot;</span>, <span class="string">&quot;LU&quot;</span>, <span class="string">&quot;LV&quot;</span>, <span class="string">&quot;LY&quot;</span>, <span class="string">&quot;MA&quot;</span>, <span class="string">&quot;MC&quot;</span>, <span class="string">&quot;MD&quot;</span>, <span class="string">&quot;MG&quot;</span>, <span class="string">&quot;ML&quot;</span>, <span class="string">&quot;MM&quot;</span>, <span class="string">&quot;MN&quot;</span>, <span class="string">&quot;MO&quot;</span>, <span class="string">&quot;MS&quot;</span>, <span class="string">&quot;MT&quot;</span>, <span class="string">&quot;MU&quot;</span>, <span class="string">&quot;MV&quot;</span>, <span class="string">&quot;MW&quot;</span>, <span class="string">&quot;MK&quot;</span>, <span class="string">&quot;MX&quot;</span>, <span class="string">&quot;MY&quot;</span>, <span class="string">&quot;MZ&quot;</span>, <span class="string">&quot;NA&quot;</span>, <span class="string">&quot;NE&quot;</span>, <span class="string">&quot;NG&quot;</span>, <span class="string">&quot;NI&quot;</span>, <span class="string">&quot;NL&quot;</span>, <span class="string">&quot;NO&quot;</span>, <span class="string">&quot;NP&quot;</span>, <span class="string">&quot;NR&quot;</span>, <span class="string">&quot;NZ&quot;</span>, <span class="string">&quot;OM&quot;</span>, <span class="string">&quot;PA&quot;</span>, <span class="string">&quot;PE&quot;</span>, <span class="string">&quot;PF&quot;</span>, <span class="string">&quot;PG&quot;</span>, <span class="string">&quot;PH&quot;</span>, <span class="string">&quot;PK&quot;</span>, <span class="string">&quot;PL&quot;</span>, <span class="string">&quot;PR&quot;</span>, <span class="string">&quot;PT&quot;</span>, <span class="string">&quot;PY&quot;</span>, <span class="string">&quot;QA&quot;</span>, <span class="string">&quot;RO&quot;</span>, <span class="string">&quot;RU&quot;</span>, <span class="string">&quot;SA&quot;</span>, <span class="string">&quot;SB&quot;</span>, <span class="string">&quot;SC&quot;</span>, <span class="string">&quot;SD&quot;</span>, <span class="string">&quot;SE&quot;</span>, <span class="string">&quot;SG&quot;</span>, <span class="string">&quot;SI&quot;</span>, <span class="string">&quot;SK&quot;</span>, <span class="string">&quot;SL&quot;</span>, <span class="string">&quot;SM&quot;</span>, <span class="string">&quot;SN&quot;</span>, <span class="string">&quot;SO&quot;</span>, <span class="string">&quot;SR&quot;</span>, <span class="string">&quot;ST&quot;</span>, <span class="string">&quot;SV&quot;</span>, <span class="string">&quot;SY&quot;</span>, <span class="string">&quot;SZ&quot;</span>, <span class="string">&quot;TD&quot;</span>, <span class="string">&quot;TG&quot;</span>, <span class="string">&quot;TH&quot;</span>, <span class="string">&quot;TJ&quot;</span>, <span class="string">&quot;TM&quot;</span>, <span class="string">&quot;TN&quot;</span>, <span class="string">&quot;TO&quot;</span>, <span class="string">&quot;TR&quot;</span>, <span class="string">&quot;TT&quot;</span>, <span class="string">&quot;TW&quot;</span>, <span class="string">&quot;TZ&quot;</span>, <span class="string">&quot;UA&quot;</span>, <span class="string">&quot;UG&quot;</span>, <span class="string">&quot;US&quot;</span>, <span class="string">&quot;UY&quot;</span>, <span class="string">&quot;UZ&quot;</span>, <span class="string">&quot;VC&quot;</span>, <span class="string">&quot;VE&quot;</span>, <span class="string">&quot;VN&quot;</span>, <span class="string">&quot;YE&quot;</span>, <span class="string">&quot;YU&quot;</span>, <span class="string">&quot;ZA&quot;</span>, <span class="string">&quot;ZM&quot;</span>, <span class="string">&quot;ZR&quot;</span>, <span class="string">&quot;ZW&quot;</span>];</span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">BLOCKED_IP_ADDRESS</span> = [<span class="string">&quot;0.0.0.0&quot;</span>, <span class="string">&quot;127.0.0.1&quot;</span>];</span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">BLOCKED_WEBSITE</span> = [<span class="string">&quot;google.com&quot;</span>, <span class="string">&quot;youtube.com&quot;</span>, <span class="string">&quot;facebook.com&quot;</span>, <span class="string">&quot;twitter.com&quot;</span>, <span class="string">&quot;instagram.com&quot;</span>, <span class="string">&quot;netflix.com&quot;</span>];</span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">ENTRY_POINT_HTML</span> = <span class="string">`&lt;html&gt;&lt;form&gt;`</span> + <span class="string">`&lt;p&gt;Upstream (*): &lt;input type=&quot;url&quot; placeholder=&quot;https://domain.tld&quot; name=&quot;service_host&quot; required autofocus /&gt;&lt;/p&gt;`</span> + <span class="string">`&lt;p&gt;Replace_Dict: &lt;input type=&quot;text&quot; placeholder=&#x27;&#123;&quot;//domain.tld&quot;:&quot;&quot;&#125;&#x27; name=&quot;replace_dict&quot; pattern=&quot;^\\&#123;.*\\&#125;$&quot; /&gt;&lt;/p&gt;`</span> + <span class="string">`&lt;p&gt;&lt;input type=&quot;submit&quot; value=&quot;Submit&quot; /&gt; &lt;input type=&quot;reset&quot; value=&quot;Reset&quot; /&gt;&lt;/p&gt;`</span> + <span class="string">`&lt;p&gt;Click the Submit button to transfer the parameters.&lt;/p&gt;`</span> + <span class="string">`&lt;/form&gt;&lt;/html&gt;`</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">escape_regexp</span> = (<span class="params">string = <span class="string">&quot;&quot;</span></span>) =&gt; string.<span class="title function_">replace</span>(<span class="regexp">/[-[\]&#123;&#125;()*+!&lt;=:?.\/\\^$|#\s,]/gi</span>, <span class="string">&quot;\\$&amp;&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="title function_">addEventListener</span>(<span class="string">&quot;fetch&quot;</span>, <span class="function">(<span class="params">event</span>) =&gt;</span> event.<span class="title function_">respondWith</span>(<span class="title function_">handle_request</span>(event.<span class="property">request</span>)));</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">handle_request</span>(<span class="params">request</span>) &#123;</span><br><span class="line">  <span class="keyword">let</span> response, response_text;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> region = (request.<span class="property">headers</span>.<span class="title function_">get</span>(<span class="string">&quot;CF-IPCountry&quot;</span>) || <span class="string">&quot;&quot;</span>).<span class="title function_">toUpperCase</span>();</span><br><span class="line">  <span class="keyword">const</span> ip_address = request.<span class="property">headers</span>.<span class="title function_">get</span>(<span class="string">&quot;CF-Connecting-IP&quot;</span>) || <span class="string">&quot;&quot;</span>;</span><br><span class="line">  <span class="keyword">const</span> request_url = <span class="keyword">new</span> <span class="title function_">URL</span>(request.<span class="property">url</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="regexp">/^\/\$help\/?$/gi</span>.<span class="title function_">test</span>(request_url.<span class="property">pathname</span>)) &#123;</span><br><span class="line">    response = <span class="keyword">new</span> <span class="title class_">Response</span>(</span><br><span class="line">      <span class="string">`Usage:</span></span><br><span class="line"><span class="string">      1. Accelerate access to jsDelivr: https://*.example.workers.dev/$jsdelivr/npm/jquery@3.2.1/dist/jquery.min.js.</span></span><br><span class="line"><span class="string">      2. Accelerate overseas assets download: https://*.example.workers.dev/$upstream/https://github.com/jquery/jquery/archive/refs/heads/main.zip.</span></span><br><span class="line"><span class="string">      3. Accelerate overseas website loading: https://*.example.workers.dev/$reset, Input the upstream URL and submit.</span></span><br><span class="line"><span class="string">      (Note: Parameter &#x27;replace_dict&#x27; can be used in conjunction with $upstream to accelerate internal links. For github, input Upstream of &#x27;https://github.com&#x27; and Replace_Dict of &#x27;&#123;&quot;github.githubassets.com&quot;:&quot;*.example.workers.dev/$upstream/https://github.githubassets.com&quot;,&quot;avatars.githubusercontent.com&quot;:&quot;*.example.workers.dev/$upstream/https://avatars.githubusercontent.com&quot;&#125;&#x27;.)</span></span><br><span class="line"><span class="string">      `</span>,</span><br><span class="line">      &#123; <span class="attr">status</span>: <span class="number">200</span> &#125;</span><br><span class="line">    );</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable constant_">BLOCKED_REGION</span>.<span class="title function_">includes</span>(region)) &#123;</span><br><span class="line">    response = <span class="keyword">new</span> <span class="title class_">Response</span>(<span class="string">&quot;Access denied: Service is not available in your region yet.&quot;</span>, &#123; <span class="attr">status</span>: <span class="number">403</span> &#125;);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable constant_">BLOCKED_IP_ADDRESS</span>.<span class="title function_">includes</span>(ip_address)) &#123;</span><br><span class="line">    response = <span class="keyword">new</span> <span class="title class_">Response</span>(<span class="string">&quot;Access denied: Your IP address is blocked.&quot;</span>, &#123; <span class="attr">status</span>: <span class="number">403</span> &#125;);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="regexp">/^\/\$jsdelivr\//gi</span>.<span class="title function_">test</span>(request_url.<span class="property">pathname</span>)) &#123;</span><br><span class="line">    <span class="keyword">const</span> service_url = <span class="string">&quot;https://cdn.jsdelivr.net&quot;</span> + request_url.<span class="property">pathname</span>.<span class="title function_">replace</span>(<span class="regexp">/^\/\$jsdelivr\//gi</span>, <span class="string">&quot;/&quot;</span>) + request_url.<span class="property">search</span> + request_url.<span class="property">hash</span>;</span><br><span class="line">    response = <span class="keyword">await</span> <span class="title function_">fetch</span>(service_url, request);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="regexp">/^\/\$upstream\//gi</span>.<span class="title function_">test</span>(request_url.<span class="property">pathname</span>)) &#123;</span><br><span class="line">    <span class="keyword">const</span> service_url = request_url.<span class="property">pathname</span>.<span class="title function_">replace</span>(<span class="regexp">/^\/\$upstream\//gi</span>, <span class="string">&quot;&quot;</span>).<span class="title function_">replace</span>(<span class="regexp">/(?&lt;=(https?:))\/+/gi</span>, <span class="string">&quot;//&quot;</span>) + request_url.<span class="property">search</span> + request_url.<span class="property">hash</span>;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="regexp">/^https?:\/\/\S+$/gi</span>.<span class="title function_">test</span>(service_url)) &#123;</span><br><span class="line">      response = <span class="keyword">new</span> <span class="title class_">Response</span>(<span class="string">&quot;Invalid upstream URL.&quot;</span>, &#123; <span class="attr">status</span>: <span class="number">400</span> &#125;);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      response = <span class="keyword">await</span> <span class="title function_">fetch</span>(service_url, request);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="regexp">/^\/\$reset\/?$/gi</span>.<span class="title function_">test</span>(request_url.<span class="property">pathname</span>)) &#123;</span><br><span class="line">    <span class="keyword">const</span> service_host = <span class="built_in">decodeURIComponent</span>(request_url.<span class="property">searchParams</span>.<span class="title function_">get</span>(<span class="string">&quot;service_host&quot;</span>) || <span class="string">&quot;&quot;</span>);</span><br><span class="line">    <span class="keyword">const</span> replace_dict = <span class="built_in">decodeURIComponent</span>(request_url.<span class="property">searchParams</span>.<span class="title function_">get</span>(<span class="string">&quot;replace_dict&quot;</span>) || <span class="string">&quot;&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (!<span class="regexp">/^https?:\/\/\S+$/gi</span>.<span class="title function_">test</span>(service_host)) &#123;</span><br><span class="line">      response = <span class="keyword">new</span> <span class="title class_">Response</span>(<span class="variable constant_">ENTRY_POINT_HTML</span>, &#123; <span class="attr">headers</span>: &#123; <span class="string">&quot;Content-Type&quot;</span>: <span class="string">&quot;text/html&quot;</span> &#125; &#125;);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable constant_">BLOCKED_WEBSITE</span>.<span class="title function_">reduce</span>(<span class="function">(<span class="params">acc, cur</span>) =&gt;</span> acc || service_host.<span class="title function_">includes</span>(cur), <span class="literal">false</span>)) &#123;</span><br><span class="line">      response = <span class="keyword">new</span> <span class="title class_">Response</span>(<span class="string">&quot;Access denied: The upstream website is blocked.&quot;</span>, &#123; <span class="attr">status</span>: <span class="number">403</span> &#125;);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (replace_dict &amp;&amp; !<span class="regexp">/^\&#123;.*\&#125;$/gi</span>.<span class="title function_">test</span>(replace_dict)) &#123;</span><br><span class="line">      response = <span class="keyword">new</span> <span class="title class_">Response</span>(<span class="string">&quot;Invalid replace_dict value.&quot;</span>, &#123; <span class="attr">status</span>: <span class="number">400</span> &#125;);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">await</span> <span class="variable constant_">PROXY_KV</span>.<span class="title function_">put</span>(ip_address + <span class="string">&quot;_proxy_service_host&quot;</span>, <span class="built_in">encodeURIComponent</span>(service_host));</span><br><span class="line">        <span class="keyword">await</span> <span class="variable constant_">PROXY_KV</span>.<span class="title function_">put</span>(ip_address + <span class="string">&quot;_proxy_replace_dict&quot;</span>, <span class="built_in">encodeURIComponent</span>(replace_dict));</span><br><span class="line">        response = <span class="title class_">Response</span>.<span class="title function_">redirect</span>(request_url.<span class="property">origin</span>, <span class="number">301</span>);</span><br><span class="line">      &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">        response = <span class="keyword">new</span> <span class="title class_">Response</span>(<span class="string">`Failed to reset the proxy settings.\n<span class="subst">$&#123;err.stack || err&#125;</span>`</span>, &#123; <span class="attr">status</span>: <span class="number">500</span> &#125;);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> proxy_service_host = <span class="built_in">decodeURIComponent</span>((<span class="keyword">await</span> <span class="variable constant_">PROXY_KV</span>.<span class="title function_">get</span>(ip_address + <span class="string">&quot;_proxy_service_host&quot;</span>)) || <span class="string">&quot;&quot;</span>);</span><br><span class="line">    <span class="keyword">const</span> proxy_replace_dict = <span class="built_in">decodeURIComponent</span>((<span class="keyword">await</span> <span class="variable constant_">PROXY_KV</span>.<span class="title function_">get</span>(ip_address + <span class="string">&quot;_proxy_replace_dict&quot;</span>)) || <span class="string">&quot;&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="regexp">/^https?:\/\/\S+$/gi</span>.<span class="title function_">test</span>(proxy_service_host)) &#123;</span><br><span class="line">      response = <span class="title class_">Response</span>.<span class="title function_">redirect</span>(request_url.<span class="property">origin</span> + <span class="string">&quot;/$reset&quot;</span>, <span class="number">301</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">let</span> temp_service_url = proxy_service_host + request_url.<span class="property">pathname</span> + request_url.<span class="property">search</span> + request_url.<span class="property">hash</span>;</span><br><span class="line">      <span class="keyword">const</span> service_url = <span class="keyword">new</span> <span class="title function_">URL</span>(temp_service_url);</span><br><span class="line">      <span class="keyword">let</span> temp_replace_dict = &#123;&#125;;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        temp_replace_dict = <span class="title class_">JSON</span>.<span class="title function_">parse</span>(proxy_replace_dict);</span><br><span class="line">      &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">        temp_replace_dict = &#123;&#125;;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">const</span> replace_dict = <span class="keyword">new</span> <span class="title class_">Map</span>(<span class="title class_">Object</span>.<span class="title function_">entries</span>(temp_replace_dict));</span><br><span class="line"></span><br><span class="line">      <span class="keyword">const</span> <span class="title function_">replace_host</span> = (<span class="params">string, origin_url, target_url</span>) =&gt; &#123;</span><br><span class="line">        <span class="keyword">return</span> string</span><br><span class="line">          .<span class="title function_">replace</span>(<span class="title class_">RegExp</span>(<span class="title function_">escape_regexp</span>(origin_url.<span class="property">origin</span>), <span class="string">&quot;gi&quot;</span>), target_url.<span class="property">origin</span>)</span><br><span class="line">          .<span class="title function_">replace</span>(<span class="title class_">RegExp</span>(<span class="string">&quot;(?&lt;![0-9A-z\\.\\-])(&quot;</span> + <span class="title function_">escape_regexp</span>(origin_url.<span class="property">host</span>) + <span class="string">&quot;|\\.?&quot;</span> + <span class="title function_">escape_regexp</span>(origin_url.<span class="property">host</span>.<span class="title function_">replace</span>(<span class="regexp">/.*?(?=([0-9A-z\-]+\.[A-z]+$))/gi</span>, <span class="string">&quot;&quot;</span>)) + <span class="string">&quot;)(?![0-9A-z\\.\\-\\:])&quot;</span>, <span class="string">&quot;gi&quot;</span>), target_url.<span class="property">host</span>)</span><br><span class="line">          .<span class="title function_">replace</span>(<span class="title class_">RegExp</span>(<span class="string">&quot;(?&lt;![0-9A-z\\.\\-])(&quot;</span> + <span class="title function_">escape_regexp</span>(origin_url.<span class="property">hostname</span>) + <span class="string">&quot;|\\.?&quot;</span> + <span class="title function_">escape_regexp</span>(origin_url.<span class="property">hostname</span>.<span class="title function_">replace</span>(<span class="regexp">/.*?(?=([0-9A-z\-]+\.[A-z]+$))/gi</span>, <span class="string">&quot;&quot;</span>)) + <span class="string">&quot;)(?![0-9A-z\\.\\-\\:])&quot;</span>, <span class="string">&quot;gi&quot;</span>), target_url.<span class="property">hostname</span>);</span><br><span class="line">      &#125;;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">const</span> request_method = request.<span class="property">method</span>.<span class="title function_">toUpperCase</span>();</span><br><span class="line">      <span class="keyword">const</span> request_headers = <span class="keyword">new</span> <span class="title class_">Headers</span>(request.<span class="property">headers</span>);</span><br><span class="line">      <span class="keyword">if</span> (request_headers.<span class="title function_">get</span>(<span class="string">&quot;Host&quot;</span>)) request_headers.<span class="title function_">set</span>(<span class="string">&quot;Host&quot;</span>, service_url.<span class="property">host</span>);</span><br><span class="line">      <span class="keyword">if</span> (request_headers.<span class="title function_">get</span>(<span class="string">&quot;Origin&quot;</span>)) request_headers.<span class="title function_">set</span>(<span class="string">&quot;Origin&quot;</span>, service_url.<span class="property">origin</span>);</span><br><span class="line">      <span class="keyword">if</span> (request_headers.<span class="title function_">get</span>(<span class="string">&quot;Referer&quot;</span>)) request_headers.<span class="title function_">set</span>(<span class="string">&quot;Referer&quot;</span>, service_url.<span class="property">origin</span>);</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">let</span> [name, value] <span class="keyword">of</span> request_headers.<span class="title function_">entries</span>()) &#123;</span><br><span class="line">        request_headers.<span class="title function_">set</span>(name, <span class="title function_">replace_host</span>(value, request_url, service_url));</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">const</span> request_body = ![<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;HEAD&quot;</span>].<span class="title function_">includes</span>(request_method) ? <span class="keyword">await</span> request.<span class="title function_">text</span>() : <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">      response = <span class="keyword">await</span> <span class="title function_">fetch</span>(service_url, &#123; <span class="attr">method</span>: request_method, <span class="attr">headers</span>: request_headers, <span class="attr">body</span>: request_body &#125;);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">const</span> response_status = response.<span class="property">status</span>;</span><br><span class="line">      <span class="keyword">const</span> response_headers = <span class="keyword">new</span> <span class="title class_">Headers</span>(response.<span class="property">headers</span>);</span><br><span class="line">      response_headers.<span class="title function_">set</span>(<span class="string">&quot;Cache-Control&quot;</span>, <span class="string">&quot;no-cache&quot;</span>);</span><br><span class="line">      response_headers.<span class="title function_">set</span>(<span class="string">&quot;Access-Control-Allow-Origin&quot;</span>, <span class="string">&quot;*&quot;</span>);</span><br><span class="line">      response_headers.<span class="title function_">set</span>(<span class="string">&quot;Access-Control-Allow-Credentials&quot;</span>, <span class="literal">true</span>);</span><br><span class="line">      response_headers.<span class="title function_">delete</span>(<span class="string">&quot;Content-Security-Policy&quot;</span>);</span><br><span class="line">      response_headers.<span class="title function_">delete</span>(<span class="string">&quot;Content-Security-Policy-Report-Only&quot;</span>);</span><br><span class="line">      response_headers.<span class="title function_">delete</span>(<span class="string">&quot;Clear-Site-Data&quot;</span>);</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">let</span> [name, value] <span class="keyword">of</span> response_headers.<span class="title function_">entries</span>()) &#123;</span><br><span class="line">        response_headers.<span class="title function_">set</span>(name, <span class="title function_">replace_host</span>(value, service_url, request_url));</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">const</span> response_body = response.<span class="property">body</span>;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (<span class="regexp">/websocket/gi</span>.<span class="title function_">test</span>(response_headers.<span class="title function_">get</span>(<span class="string">&quot;Upgrade&quot;</span>))) <span class="keyword">return</span> response;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (<span class="regexp">/(text\/html|text\/css|\/javascript|\/x\-javascript|\/ecmascript|application\/json)/gi</span>.<span class="title function_">test</span>(response_headers.<span class="title function_">get</span>(<span class="string">&quot;Content-Type&quot;</span>))) &#123;</span><br><span class="line">        response_text = <span class="keyword">await</span> response.<span class="title function_">text</span>();</span><br><span class="line">        response_text = <span class="title function_">replace_host</span>(response_text, service_url, request_url);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> [name, value] <span class="keyword">of</span> replace_dict.<span class="title function_">entries</span>()) &#123;</span><br><span class="line">          response_text = response_text.<span class="title function_">replaceAll</span>(name, value);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="regexp">/text\/html/gi</span>.<span class="title function_">test</span>(response_headers.<span class="title function_">get</span>(<span class="string">&quot;Content-Type&quot;</span>))) &#123;</span><br><span class="line">          response_text = response_text.<span class="title function_">replace</span>(<span class="regexp">/integrity=(&quot;|&#x27;).*?(&quot;|&#x27;)/gi</span>, <span class="string">&quot;&quot;</span>).<span class="title function_">replace</span>(<span class="regexp">/crossorigin=(&quot;|&#x27;).*?(&quot;|&#x27;)/gi</span>, <span class="string">&quot;&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        response_text = response_body;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      response = <span class="keyword">new</span> <span class="title class_">Response</span>(response_text, &#123; <span class="attr">status</span>: response_status, <span class="attr">headers</span>: response_headers &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> response;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/markdown-it-texmath/css/texmath.min.css">
+
+      
+        <div class="mdui-m-y-2 mdui-text-center">
+          <button class="mdui-fab mdui-color-deep-orange mdui-text-color-white mdui-ripple" mdui-dialog="{target: '#donate'}" mdui-tooltip="{content: '打赏', position: 'top'}"><i class="mdui-icon material-icons">thumb_up</i></button>
+        </div>
+      
+      <blockquote>
+        
+          <strong>本文遵循 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">CC BY-NC-SA 4.0</a> 许可协议</strong><br>
+        
+        <strong>本文链接：</strong><br><a href="https://www.niemingzhao.top/2019/01/01/Reverse-Proxy-Script-for-Cloudflare-Workers/">https://www.niemingzhao.top/2019/01/01/Reverse-Proxy-Script-for-Cloudflare-Workers/</a>
+      </blockquote>
+    </div>
+    <footer class="mdui-card-actions">
+      
+        <a class="mdui-ripple article_categories-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>
+      
+      
+        <a class="mdui-ripple article_tags-link" href="/tags/Cloudflare/" rel="tag">Cloudflare</a>
+      
+    </footer>
+    
+      <div class="mdui-dialog" id="donate">
+        <div class="mdui-tab mdui-tab-centered">
+          
+            <a href="#donate-0" class="mdui-ripple">支付宝</a>
+          
+            <a href="#donate-1" class="mdui-ripple">微信支付</a>
+          
+        </div>
+        
+        
+          <div id="donate-0" class="mdui-p-a-2 mdui-typo mdui-text-center">
+            
+              <img src="/images/alipay.jpg" style="width: 300px;">
+            
+          </div>
+        
+          <div id="donate-1" class="mdui-p-a-2 mdui-typo mdui-text-center">
+            
+              <img src="/images/wechat.jpg" style="width: 300px;">
+            
+          </div>
+        
+      </div>
+    
+  </article>
+  
+<script src="//cdn.bootcdn.net/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+  <script>$("#main article .mdui-card-content img.fancybox").on("click",function(e){$.fancybox.open({src:$(this).attr("src")});});</script>
+
+
+  <nav id="paginator">
+    
+      <a rel="prev" class="extend prev" href="/2019/01/01/Markdown%E6%B5%8B%E8%AF%95%E9%A1%B5/">
+        <button aria-label="prev" class="mdui-btn mdui-btn-raised mdui-btn-icon mdui-color-theme-accent mdui-ripple"><i class="mdui-icon material-icons">arrow_back</i></button>
+        <span class="mdui-p-x-3" mdui-tooltip="{content: 'Markdown测试页'}">上一篇</span>
+      </a>
+    
+    <div class="spacer"></div>
+    
+      <a rel="next" class="extend next" href="/2019/01/01/Ubuntu-Server-Settings/">
+        <span class="mdui-p-x-3" mdui-tooltip="{content: 'Ubuntu Server Settings'}">下一篇</span>
+        <button aria-label="next" class="mdui-btn mdui-btn-raised mdui-btn-icon mdui-color-theme-accent mdui-ripple"><i class="mdui-icon material-icons">arrow_forward</i></button>
+      </a>
+    
+  </nav>
+
+
+  <div id="comment" class="mdui-m-t-5">
+    <div id="gitalk-container"></div>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script>
+  var gitalk = new Gitalk({
+    clientID: 'c3d07683889a30cce9f4',
+    clientSecret: '4075822d529574759bcaf8f1b55618cf6f1421f9',
+    repo: 'niemingzhao.github.io',
+    owner: 'niemingzhao',
+    admin: ['niemingzhao'],
+    id: 'efca6dd3-5b4c-a9a1-abf2-609d9a0e4e5c' || location.pathname,
+    distractionFreeMode: false
+  });
+  gitalk.render('gitalk-container');
+</script>
+
+  </div>
+
+
+
+
+</main>
+  <footer id="footer" class="mdui-m-t-5 mdui-p-y-3 mdui-color-theme">
+  <div class="mdui-p-y-0 mdui-text-center">
+    
+    
+    
+    
+      <a href="https://weibo.com/2360828682/profile" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xec7e;</i></a>
+    
+    
+    
+    
+      <a href="https://github.com/niemingzhao" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe7ab;</i></a>
+    
+    
+    
+      <a href="https://www.zhihu.com/people/nie-1-58" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe6c0;</i></a>
+    
+    
+    
+      <a href="tencent://message/?uin=1432440963&Menu=yes" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe651;</i></a>
+    
+    
+  </div>
+  <div class="mdui-p-y-1 mdui-text-center">
+    Copyright &copy; 2016 - 2026 聂明照<br>
+    Powered by <a href="https://hexo.io/" target="_blank" class="mdui-text-color-theme-accent">Hexo</a> | Theme - <a href="https://github.com/niemingzhao/niemingzhao.github.io/tree/theme" target="_blank" class="mdui-text-color-theme-accent">default</a><br>京公网安备<a href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502053272" target="_blank" class="mdui-text-color-theme-accent">11010502053272</a>号 | 京ICP备<a href="https://beian.miit.gov.cn" target="_blank" class="mdui-text-color-theme-accent">2023020255</a>号
+    <br>
+      <span id="busuanzi_container_site_pv" style="display: none;"><i class="iconfont">&#xe7fd;</i> <span id="busuanzi_value_site_pv"></span></span> &nbsp;&nbsp;
+      <span id="busuanzi_container_site_uv" style="display: none;"><i class="iconfont">&#xe601;</i> <span id="busuanzi_value_site_uv"></span></span>
+    
+  </div>
+</footer>
+
+  <button id="gotop" class="mdui-fab mdui-fab-fixed mdui-fab-hide mdui-color-theme-accent mdui-ripple"><i class="mdui-icon material-icons">arrow_upward</i></button>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+<script src="/js/mdui.js"></script>
+<script src="/js/script.js"></script>
+
+  
+<script src="/custom.js"></script>
+
+</body>
+</html>

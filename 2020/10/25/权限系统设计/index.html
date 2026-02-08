@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="renderer" content="webkit">
+
+  
+  <title>权限系统设计 | 聂明照的博客</title>
+
+  <link rel="shortcut icon" href="/images/favicon.jpg">
+  <link rel="alternate" href="/atom.xml" title="聂明照的博客" type="application/atom+xml">
+  <meta name="description" content="前言 权限管理是所有后台系统的都会涉及的一个重要组成部分，主要目的是对不同的人访问资源进行权限的控制，避免因权限控制缺失或操作不当引发的风险问题，如操作错误、隐私数据泄露等问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="权限系统设计">
+<meta property="og:url" content="https://www.niemingzhao.top/2020/10/25/%E6%9D%83%E9%99%90%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/index.html">
+<meta property="og:site_name" content="聂明照的博客">
+<meta property="og:description" content="前言 权限管理是所有后台系统的都会涉及的一个重要组成部分，主要目的是对不同的人访问资源进行权限的控制，避免因权限控制缺失或操作不当引发的风险问题，如操作错误、隐私数据泄露等问题。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://images.niemingzhao.top/image/2020/10/25/wu_1elfioupi9h174lipquagfp6.png-default">
+<meta property="og:image" content="https://images.niemingzhao.top/image/2020/10/25/wu_1elfj5juv1t8p1d4h1c241efhk9g9.png-default">
+<meta property="og:image" content="https://images.niemingzhao.top/image/2020/10/25/wu_1elfj82so1buj1o4s1jpj1aja3ic.png-default">
+<meta property="og:image" content="https://images.niemingzhao.top/image/2020/10/25/wu_1elfjkt8te0o1i6j1m3rngk1o75f.png-default">
+<meta property="og:image" content="https://images.niemingzhao.top/image/2020/10/25/wu_1elfjmeolr9i1d231a7e131p4s3i.png-default">
+<meta property="og:image" content="https://images.niemingzhao.top/image/2020/10/25/wu_1elfjoc3j1h3v1hjgf6452sinl.png-default">
+<meta property="og:image" content="https://images.niemingzhao.top/image/2020/10/25/wu_1elfk56ue1gqep3v2j211n21noro.png-default">
+<meta property="article:published_time" content="2020-10-25T09:47:30.000Z">
+<meta property="article:modified_time" content="2026-02-08T11:30:13.900Z">
+<meta property="article:author" content="聂明照">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://images.niemingzhao.top/image/2020/10/25/wu_1elfioupi9h174lipquagfp6.png-default">
+
+  <meta name="keywords" content=",Java">
+  <meta name="format-detection" content="telephone=no,email=no">
+  <meta name="theme-color" content="#9C27B0">
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="聂明照的博客">
+  <meta name="msapplication-starturl" content="https://www.niemingzhao.top/2020/10/25/%E6%9D%83%E9%99%90%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">
+  <meta name="msapplication-navbutton-color" content="#9C27B0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="聂明照的博客">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="apple-touch-icon" href="/images/favicon.jpg">
+
+  
+    <link rel="canonical" href="https://www.niemingzhao.top/2020/10/25/%E6%9D%83%E9%99%90%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">
+  
+
+  <meta name="google-site-verification" content="fXjtlIfaDc_X-0P11rO3bEp1Nk4IKXphoJv0GqGZCco">
+  <meta name="baidu-site-verification" content="I3t1wfwZvd">
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create','UA-139531378-1','auto');ga('send','pageview');
+</script>
+
+  <script>
+  var _hmt = _hmt || [];
+  (function() {var hm = document.createElement('script');
+  hm.src = '//hm.baidu.com/hm.js?22e4d3b73c21ec2f0e1b4f3ff78c9a9c';
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+  
+
+  
+<link rel="stylesheet" href="/css/mdui.css">
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/custom.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="mdui-appbar-with-toolbar mdui-theme-primary-brown mdui-theme-accent-blue">
+  <script>var a=localStorage.getItem("mdui-theme-layout-dark");if(a){document.getElementsByTagName("body")[0].className+=" mdui-theme-layout-dark"};</script>
+  <script>if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){document.getElementsByTagName("body")[0].className+=" mdui-theme-layout-dark"};</script>
+  <script>var a=localStorage.getItem("mdui-drawer-close");if(!a){document.getElementsByTagName("body")[0].className+=" mdui-drawer-body-left"};</script>
+  <header id="header" class="mdui-appbar mdui-appbar-fixed mdui-appbar-scroll-hide mdui-appbar-inset">
+  <div class="mdui-toolbar mdui-color-theme">
+    <a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-drawer="{target: '#sidebar', swipe: true}"><i class="mdui-icon material-icons">menu</i></a>
+    <a href="/" class="mdui-typo-headline">聂明照的博客</a>
+    <div class="mdui-toolbar-spacer"></div>
+    <a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-dialog="{target: '#search'}" mdui-tooltip="{content: '搜索'}"><i class="mdui-icon material-icons">search</i></a>
+    <a href="/atom.xml" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: 'RSS'}"><i class="mdui-icon material-icons">rss_feed</i></a>
+  </div>
+</header>
+<div class="mdui-dialog" id="search">
+  
+    <div class="search-form">
+      <input type="search" class="search-form-input" placeholder="请输入关键字">
+    </div>
+    <div class="search-result" data-resource="/search.xml"></div>
+  
+</div>
+
+  <aside id="sidebar" class="mdui-drawer mdui-drawer-full-height">
+  <script>var a=localStorage.getItem("mdui-drawer-close");if(a){document.getElementById("sidebar").className+=" mdui-drawer-close"};</script>
+  <div class="mdui-grid-tile">
+    <img src="/images/banner.jpg" style="height: 160px;">
+    <img src="/images/avatar.jpg" class="avatar-animation" style="position: absolute; top: 10%; left: 24px; width: 64px; height: 64px; border: 2px solid #fff; border-radius: 50%;">
+    <div class="mdui-grid-tile-actions">
+      <div class="mdui-grid-tile-text">
+        <div class="mdui-grid-tile-title">聂明照</div>
+        <div class="mdui-grid-tile-subtitle"><i class="mdui-icon material-icons">art_track</i>桃李不言，下自成蹊</div>
+      </div>
+      
+        <div class="mdui-grid-tile-buttons">
+          <a href="mailto:1432440963@qq.com" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: '1432440963@qq.com'}"><i class="mdui-icon material-icons">email</i></a>
+        </div>
+      
+    </div>
+  </div>
+
+  <div class="mdui-list" mdui-collapse="{accordion: true}">
+    <a href="/" class="mdui-list-item mdui-ripple">
+      <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-blue">home</i>
+      <div class="mdui-list-item-content">主页</div>
+    </a>
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-0");if(a){document.getElementsByClassName("mdui-collapse-item")[0].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-deep-orange">archive</i>
+        <div class="mdui-list-item-content">归档</div>
+        <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        
+        <a class="mdui-ripple sidebar_archives-link" href="/archives/2020/10/">十月 2020<span class="mdui-ripple sidebar_archives-count">2</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2019/06/">六月 2019<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2019/01/">一月 2019<span class="mdui-ripple sidebar_archives-count">5</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2017/01/">一月 2017<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2016/10/">十月 2016<span class="mdui-ripple sidebar_archives-count">2</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2016/08/">八月 2016<span class="mdui-ripple sidebar_archives-count">2</span></a>
+        
+      </div>
+    </div>
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-1");if(a){document.getElementsByClassName("mdui-collapse-item")[1].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-green">class</i>
+        <div class="mdui-list-item-content">分类</div>
+        <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        
+        <a class="mdui-ripple sidebar_archives-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术<span class="mdui-ripple sidebar_archives-count">9</span></a><a class="mdui-ripple sidebar_archives-link" href="/categories/%E6%96%87%E7%B2%B9/">文粹<span class="mdui-ripple sidebar_archives-count">2</span></a>
+        
+      </div>
+    </div>
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-2");if(a){document.getElementsByClassName("mdui-collapse-item")[2].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-brown">bookmark</i>
+        <div class="mdui-list-item-content">标签</div>
+        <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        
+        <a class="mdui-ripple sidebar_archives-link" href="/tags/Cloudflare/" rel="tag">Cloudflare<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Git/" rel="tag">Git<span class="mdui-ripple sidebar_archives-count">2</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/HomeLab/" rel="tag">HomeLab<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Java/" rel="tag">Java<span class="mdui-ripple sidebar_archives-count">2</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Markdown/" rel="tag">Markdown<span class="mdui-ripple sidebar_archives-count">3</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Self-Hosted/" rel="tag">Self-Hosted<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Ubuntu/" rel="tag">Ubuntu<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/%E5%8F%A4%E6%96%87/" rel="tag">古文<span class="mdui-ripple sidebar_archives-count">2</span></a>
+        
+      </div>
+    </div>
+    <a href="/about" class="mdui-list-item mdui-ripple">
+      <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-purple">person</i>
+      <div class="mdui-list-item-content">关于</div>
+    </a>
+  </div>
+
+  <div class="mdui-divider"></div>
+
+  <div class="mdui-list" mdui-collapse="{accordion: true}">
+    
+      <a href="/timeline" class="mdui-list-item mdui-ripple">时间轴</a>
+    
+      <a href="/tagcloud" class="mdui-list-item mdui-ripple">标签云</a>
+    
+      <a href="/gallery" class="mdui-list-item mdui-ripple">相册</a>
+    
+      <a href="/tv" class="mdui-list-item mdui-ripple">电视直播</a>
+    
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-3");if(a){document.getElementsByClassName("mdui-collapse-item")[3].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <div class="mdui-list-item-content">友情链接</div>
+        <i class="mdui-list-item-icon mdui-icon material-icons">link</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        
+          <a href="//home.niemingzhao.top" target="_blank" class="mdui-list-item mdui-p-l-2 mdui-text-color-theme-accent mdui-ripple" style="justify-content: center;">自建服务导航</a>
+        
+        
+      </div>
+    </div>
+  </div>
+</aside>
+
+  <main id="main" class="mdui-m-t-5 fadeIn animated">
+  
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
+
+  <style>#main article .mdui-card-content .center-block{display:block!important;margin-right:auto!important;margin-left:auto!important}</style>
+  <style>#main article .mdui-card-content .text-center{text-align:center!important}</style>
+  <article class="mdui-card mdui-m-b-5">
+    <header class="mdui-card-media">
+      <img src="//images.niemingzhao.top/image/2020/10/25/wu_1elfkitn8je787615os16tlu256.png" style="max-height: 240px;">
+      <div class="mdui-card-media-covered">
+        <div class="mdui-card-primary">
+          <div class="mdui-card-primary-title">权限系统设计</div>
+          <div class="mdui-card-primary-subtitle"><i class="iconfont">&#xe697;</i> 2020-10-25 / <i class="iconfont">&#xe601;</i> 聂明照 &nbsp;&nbsp; <span id="busuanzi_container_page_pv" style="display: none;"><i class="iconfont">&#xe7fd;</i> <span id="busuanzi_value_page_pv"></span></span></div>
+        </div>
+      </div>
+      <div class="mdui-card-menu">
+        
+          <button class="mdui-btn mdui-btn-icon mdui-text-color-white" mdui-menu="{target: '#qrcode', align: 'right'}"><i class="mdui-icon material-icons">devices</i></button>
+          <ul class="mdui-menu" id="qrcode">
+            
+              <li class="mdui-menu-item"><a class="mdui-text-center mdui-ripple">发送到手机</a></li>
+            
+            <li class="mdui-menu-item" disabled>
+              
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAADhElEQVR42u3bwW5qMQwEUP7/p/u2T6oKY09CqXTuqqooSQ6L1Pbw+PL89zwQ4MCBAwcOHDhw4MDxwRyP+Pn+V89/s3vl9xWnexifBQcOHDhwXOB4cRXFR80hnv/8/Bi7/fy4Kxw4cODAcY0jWX66lekFnOwn504oceDAgQPHJ3BEyxx9n6jNhwMHDhw4/ixHU+ztgKbtQhw4cODA8Qkc0wssGfk0jcKkkPvlXikOHDhw4KgDDZ//81vzHThw4MCB46sNYU9LrGnBtrtiqxPhwIEDB46jHNOY2i7QlpdefSmY7B8HDhw4cNzjeN7yy6/bhilv/PVjqqiEw4EDBw4cFzjyxaYhg12Zlwfpkp3gwIEDB473cOS/acLT00Jxd+z8XwccOHDgwHGW42w4YFdE5c3E3ftUvVIcOHDgwLGas+RvlDfj8lJwN6zq25Q4cODAgeMGx27r0yen3A2xqosZBw4cOHAc5WiacbtLdBd3mO55EM7AgQMHDhxHOZrLLGnPnYrEnYpNRCUcDhw4cOAoOHbjnGSxvHjLwwrN4XHgwIEDx3s4mlhAcyVPx0XN2OnFSXHgwIEDxwWOZOHd5ZpftNOd7D4AHDhw4MDxHo5pey5fMh8aTRGv5ztw4MCBA0eRDcvbdtOm4dnwQcM07pXiwIEDB45fmrNMsaZ/mwyoqqIUBw4cOHC8haMv8KbtwlOX8ZVAAw4cOHDgGHLkoYFpTG33/n3se/AB48CBAweOoxw3Bk55DO7UgCofWUVjJxw4cODAUXNMv9izayZOV8yHSdXViwMHDhw4jnLkX4/JIwV9GCLnzneIAwcOHDh+i+MRP3nhlFyQSYHXfK1o/G0nHDhw4MBRc+xKoyZIN33ltDlYTeFw4MCBA0fBMR1E5YVfXwTuWo15sxIHDhw4cNzj2B11d4DdijuOcXMQBw4cOHAc4sibfQnljmN3VU8fHDhw4MBxj2PXkuuDCM2K0ybgi3EXDhw4cOA4yrG7nPLyrw9MT9uL4/IPBw4cOHBc4MijA3nJdyAeXbzmSqABBw4cOHAMOZqY9bJ8isMKu/ZitFscOHDgwPFhHGfbedOruoky4MCBAweOT+PoQ9K7S3Qap3ixCg4cOHDguMbRDH52bcEpRzN2+nFXOHDgwIHjAse0uZZfnH0wIr+epxFwHDhw4MBxg8ODAwcOHDhw4MCBAweOD3v+ATxWKvNTiqVfAAAAAElFTkSuQmCC">
+              
+            </li>
+          </ul>
+        
+        
+          <button class="mdui-btn mdui-btn-icon mdui-text-color-white" mdui-menu="{target: '#share_menu', align: 'right'}"><i class="mdui-icon material-icons">share</i></button>
+          <ul class="mdui-menu" id="share_menu">
+            <li class="mdui-menu-item">
+              <a href="https://service.weibo.com/share/share.php?appkey=&title=权限系统设计&url=https://www.niemingzhao.top/2020/10/25/%E6%9D%83%E9%99%90%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/&pic=https://www.niemingzhao.top/images/favicon.jpg&searchPic=false&style=simple" target="_blank" class="mdui-ripple">分享到 Weibo</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://twitter.com/intent/tweet?text=权限系统设计&url=https://www.niemingzhao.top/2020/10/25/%E6%9D%83%E9%99%90%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/&via=聂明照" target="_blank" class="mdui-ripple">分享到 Twitter</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.niemingzhao.top/2020/10/25/%E6%9D%83%E9%99%90%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" target="_blank" class="mdui-ripple">分享到 Facebook</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://plus.google.com/share?url=https://www.niemingzhao.top/2020/10/25/%E6%9D%83%E9%99%90%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" target="_blank" class="mdui-ripple">分享到 Google+</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.niemingzhao.top/2020/10/25/%E6%9D%83%E9%99%90%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/&title=权限系统设计" target="_blank" class="mdui-ripple">分享到 LinkedIn</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://connect.qq.com/widget/shareqq/index.html?site=聂明照的博客&title=权限系统设计&pics=https://www.niemingzhao.top/images/favicon.jpg&url=https://www.niemingzhao.top/2020/10/25/%E6%9D%83%E9%99%90%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" target="_blank" class="mdui-ripple">分享到 QQ</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://telegram.me/share/url?url=https://www.niemingzhao.top/2020/10/25/%E6%9D%83%E9%99%90%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/&text=权限系统设计" target="_blank" class="mdui-ripple">分享到 Telegram</a>
+            </li>
+          </ul>
+        
+      </div>
+    </header>
+    <div class="mdui-card-content mdui-typo">
+      <h3 id="%E5%89%8D%E8%A8%80" tabindex="-1">前言<a class="header-anchor" href="#%E5%89%8D%E8%A8%80" aria-hidden="true"></a></h3>
+<p>权限管理是所有后台系统的都会涉及的一个重要组成部分，主要目的是对不同的人访问资源进行权限的控制，避免因权限控制缺失或操作不当引发的风险问题，如操作错误、隐私数据泄露等问题。</p>
+<span id="more"></span>
+<p>目前在公司负责权限这块，所以对权限这块的设计比较熟悉，公司采用微服务架构，权限系统自然就独立出来了，其他业务系统包括商品中心、订单中心、用户中心、仓库系统、小程序、多个APP等十几个系统和终端。</p>
+<h3 id="1.%E6%9D%83%E9%99%90%E6%A8%A1%E5%9E%8B" tabindex="-1">1.权限模型<a class="header-anchor" href="#1.%E6%9D%83%E9%99%90%E6%A8%A1%E5%9E%8B" aria-hidden="true"></a></h3>
+<p>迄今为止最为普及的权限设计模型是RBAC模型，基于角色的访问控制（Role-Based Access Control）。</p>
+<h4 id="1.1-rbac0%E6%A8%A1%E5%9E%8B" tabindex="-1">1.1 RBAC0模型<a class="header-anchor" href="#1.1-rbac0%E6%A8%A1%E5%9E%8B" aria-hidden="true"></a></h4>
+<p>RBAC0模型如下：</p>
+<p><img src="//images.niemingzhao.top/image/2020/10/25/wu_1elfioupi9h174lipquagfp6.png-default" alt="" class="center-block"></p>
+<p>这是权限最基础也是最核心的模型，它包括用户/角色/权限，其中用户和角色是多对多的关系，角色和权限也是多对多的关系。</p>
+<p><strong>用户</strong>是发起操作的主体，按类型分可分为2B和2C用户，可以是后台管理系统的用户，可以是OA系统的内部员工，也可以是面向C端的用户，比如阿里云的用户。</p>
+<p><strong>角色</strong>起到了桥梁的作用，连接了用户和权限的关系，每个角色可以关联多个权限，同时一个用户关联多个角色，那么这个用户就有了多个角色的多个权限。有人会问了为什么用户不直接关联权限呢？在用户基数小的系统，比如20个人的小系统，管理员可以直接把用户和权限关联，工作量并不大，选择一个用户勾选下需要的权限就完事了。但是在实际企业系统中，用户基数比较大，其中很多人的权限都是一样的，就是个普通访问权限，如果管理员给100人甚至更多授权，工作量巨大。这就引入了“角色（Role）”概念，一个角色可以与多个用户关联，管理员只需要把该角色赋予用户，那么用户就有了该角色下的所有权限，这样设计既提升了效率，也有很大的拓展性。</p>
+<p><strong>权限</strong>是用户可以访问的资源，包括页面权限、操作权限、数据权限：</p>
+<ul>
+<li>页面权限：即用户登录系统可以看到的页面，由菜单来控制，菜单包括一级菜单和二级菜单，只要用户有一级和二级菜单的权限，那么用户就可以访问页面。</li>
+<li>操作权限：即页面的功能按钮，包括查看、新增、修改、删除、审核等，用户点击删除按钮时，后台会校验用户角色下的所有权限是否包含该删除权限，如果是，就可以进行下一步操作，反之提示无权限。有的系统要求“可见即可操作”，意思是如果页面上能够看到操作按钮，那么用户就可以操作。要实现此需求，这里就需要前端来配合，前端开发把用户的权限信息缓存，在页面判断用户是否包含此权限，如果有，就显示该按钮，如果没有，就隐藏该按钮。某种程度上提升了用户体验，但是在实际场景可自行选择是否需要这样做。</li>
+<li>数据权限：数据权限就是用户在同一页面看到的数据是不同的，比如财务部只能看到其部门下的用户数据，采购部只看采购部的数据。在一些大型的公司，全国有很多城市和分公司，比如杭州用户登录系统只能看到杭州的数据，上海用户只能看到上海的数据。解决方案一般是把数据和具体的组织架构关联起来。举个例子，再给用户授权的时候，用户选择某个角色同时绑定组织如财务部或者合肥分公司，那么该用户就有了该角色下财务部或合肥分公司下的的数据权限。</li>
+</ul>
+<p><img src="//images.niemingzhao.top/image/2020/10/25/wu_1elfj5juv1t8p1d4h1c241efhk9g9.png-default" alt="" class="center-block"></p>
+<p>以上是RBAC的核心设计及模型分析，此模型也叫做RBAC0，而基于核心概念之上，RBAC还提供了扩展模式，包括RBAC1、RBAC2、RBAC3模型。下面介绍这三种类型。</p>
+<h4 id="1.2-rbac1%E6%A8%A1%E5%9E%8B" tabindex="-1">1.2 RBAC1模型<a class="header-anchor" href="#1.2-rbac1%E6%A8%A1%E5%9E%8B" aria-hidden="true"></a></h4>
+<p><img src="//images.niemingzhao.top/image/2020/10/25/wu_1elfj82so1buj1o4s1jpj1aja3ic.png-default" alt="" class="center-block"></p>
+<p>此模型引入了角色继承（Hierarchical Role）概念，即角色具有上下级的关系，角色间的继承关系可分为一般继承关系和受限继承关系。一般继承关系仅要求角色继承关系是一个绝对偏序关系，允许角色间的多继承。而受限继承关系则进一步要求角色继承关系是一个树结构，实现角色间的单继承。这种设计可以给角色分组和分层，一定程度简化了权限管理工作。</p>
+<h4 id="1.3-rbac2%E6%A8%A1%E5%9E%8B" tabindex="-1">1.3 RBAC2模型<a class="header-anchor" href="#1.3-rbac2%E6%A8%A1%E5%9E%8B" aria-hidden="true"></a></h4>
+<p>基于核心模型的基础上，进行了角色的约束控制，RBAC2模型中添加了责任分离关系，其规定了权限被赋予角色时，或角色被赋予用户时，以及当用户在某一时刻激活一个角色时所应遵循的强制性规则。责任分离包括静态责任分离和动态责任分离。主要包括以下约束：</p>
+<ul>
+<li>互斥角色：同一用户只能分配到一组互斥角色集合中至多一个角色，支持责任分离的原则。互斥角色是指各自权限互相制约的两个角色，比如财务部有会计和审核员两个角色，他们是互斥角色，那么用户不能同时拥有这两个角色，体现了职责分离原则。</li>
+<li>基数约束：一个角色被分配的用户数量受限；一个用户可拥有的角色数目受限；同样一个角色对应的访问权限数目也应受限，以控制高级权限在系统中的分配。</li>
+<li>先决条件角色：即用户想获得某上级角色，必须先获得其下一级的角色。</li>
+</ul>
+<h4 id="1.4-rbac3%E6%A8%A1%E5%9E%8B" tabindex="-1">1.4 RBAC3模型<a class="header-anchor" href="#1.4-rbac3%E6%A8%A1%E5%9E%8B" aria-hidden="true"></a></h4>
+<p>即最全面的权限管理，它是基于RBAC0，将RBAC1和RBAC2进行了整合。</p>
+<h4 id="1.5-%E7%94%A8%E6%88%B7%E7%BB%84" tabindex="-1">1.5 用户组<a class="header-anchor" href="#1.5-%E7%94%A8%E6%88%B7%E7%BB%84" aria-hidden="true"></a></h4>
+<p>当平台用户基数增大，角色类型增多时，而且有一部分人具有相同的属性，比如财务部的所有员工，如果直接给用户分配角色，管理员的工作量就会很大，如果把相同属性的用户归类到某用户组，那么管理员直接给用户组分配角色，用户组里的每个用户即可拥有该角色，以后其他用户加入用户组后，即可自动获取用户组的所有角色，退出用户组，同时也撤销了用户组下的角色，无须管理员手动管理角色。</p>
+<p>根据用户组是否有上下级关系，可以分为有上下级的用户组和普通用户组：</p>
+<ul>
+<li>具有上下级关系的用户组：最典型的例子就是部门和职位，可能多数人没有把部门职位和用户组关联起来吧。当然用户组是可以拓展的，部门和职位常用于内部的管理系统，如果是面向C端的系统，比如淘宝网的商家，商家自身也有一套组织架构，比如采购部、销售部、客服部、后勤部等，有些人拥有客服权限，有些人拥有上架权限等等，所以用户组是可以拓展的。</li>
+<li>普通用户组：即没有上下级关系，和组织架构、职位都没有关系，也就是说可以跨部门、跨职位，举个例子，某电商后台管理系统，有拼团活动管理角色，我们可以设置一个拼团用户组，该组可以包括研发部的后台开发人员、运营部的运营人员、采购部的人员等等。</li>
+</ul>
+<p>每个公司都会涉及到到组织和职位，下面就重点介绍这两个。</p>
+<h5 id="1.5.1-%E7%BB%84%E7%BB%87" tabindex="-1">1.5.1 组织<a class="header-anchor" href="#1.5.1-%E7%BB%84%E7%BB%87" aria-hidden="true"></a></h5>
+<p>常见的组织架构如下图：</p>
+<p><img src="//images.niemingzhao.top/image/2020/10/25/wu_1elfjkt8te0o1i6j1m3rngk1o75f.png-default" alt="" class="center-block"></p>
+<p>我们可以把组织与角色进行关联，用户加入组织后，就会自动获得该组织的全部角色，无须管理员手动授予，大大减少工作量，同时用户在调岗时，只需调整组织，角色即可批量调整。组织的另外一个作用是控制数据权限，把角色关联到组织，那么该角色只能看到该组织下的数据权限。</p>
+<h5 id="1.5.2-%E8%81%8C%E4%BD%8D" tabindex="-1">1.5.2 职位<a class="header-anchor" href="#1.5.2-%E8%81%8C%E4%BD%8D" aria-hidden="true"></a></h5>
+<p>假设财务部的职位如下图：</p>
+<p><img src="//images.niemingzhao.top/image/2020/10/25/wu_1elfjmeolr9i1d231a7e131p4s3i.png-default" alt="" class="center-block"></p>
+<p>每个组织部门下都会有多个职位，比如财务部有总监、会计、出纳等职位，虽然都在同一部门，但是每个职位的权限是不同的，职位高的拥有更多的权限。总监拥有所有权限，会计和出纳拥有部分权限。特殊情况下，一个人可能身兼多职。</p>
+<h4 id="1.6-%E5%90%AB%E6%9C%89%E7%BB%84%E7%BB%87%2F%E8%81%8C%E4%BD%8D%2F%E7%94%A8%E6%88%B7%E7%BB%84%E7%9A%84%E6%A8%A1%E5%9E%8B" tabindex="-1">1.6 含有组织/职位/用户组的模型<a class="header-anchor" href="#1.6-%E5%90%AB%E6%9C%89%E7%BB%84%E7%BB%87%2F%E8%81%8C%E4%BD%8D%2F%E7%94%A8%E6%88%B7%E7%BB%84%E7%9A%84%E6%A8%A1%E5%9E%8B" aria-hidden="true"></a></h4>
+<p>根据以上场景，新的权限模型就可以设计出来了，如下图：</p>
+<p><img src="//images.niemingzhao.top/image/2020/10/25/wu_1elfjoc3j1h3v1hjgf6452sinl.png-default" alt="" class="center-block"></p>
+<p>根据系统的复杂度不同，其中的多对多关系和一对一关系可能会有变化：</p>
+<ul>
+<li>在单系统且用户类型单一的情况下，用户和组织是一对一关系，组织和职位是一对多关系，用户和职位是一对一关系，组织和角色是一对一关系，职位和角色是一对一关系，用户和用户组是多对对关系，用户组和角色是一对一关系，当然这些关系也可以根据具体业务进行调整。模型设计并不是死的，如果小系统不需要用户组，这块是可以去掉的。</li>
+<li>分布式系统且用户类型单一的情况下，到这里权限系统就会变得很复杂，这里就要引入了一个“系统”概念，此时系统架构是个分布式系统，权限系统独立出来，负责所有的系统的权限控制，其他业务系统比如商品中心、订单中心、用户中心，每个系统都有自己的角色和权限，那么权限系统就可以配置其他系统的角色和权限。</li>
+<li>分布式系统且用户类型多个的情况下，比如淘宝网，它的用户类型包括内部用户、商家、普通用户，内部用户登录多个后台管理系统，商家登录商家中心。这些做权限控制，如果你作为架构师，该如何来设计呢？</li>
+</ul>
+<h3 id="2.%E6%8E%88%E6%9D%83%E6%B5%81%E7%A8%8B" tabindex="-1">2.授权流程<a class="header-anchor" href="#2.%E6%8E%88%E6%9D%83%E6%B5%81%E7%A8%8B" aria-hidden="true"></a></h3>
+<p>授权即给用户授予角色，按流程可分为手动授权和审批授权。权限中心可同时配置这两种，可提高授权的灵活性。</p>
+<ul>
+<li>手动授权：管理员登录权限中心为用户授权，根据在哪个页面授权分为两种方式：给用户添加角色、给角色添加用户。给用户添加角色就是在用户管理页面，点击某个用户去授予角色，可以一次为用户添加多个角色；给角色添加用户就是在角色管理页面，点击某个角色，选择多个用户，实现了给批量用户授予角色的目的。</li>
+<li>审批授权：即用户申请某个职位角色，那么用户通过OA流程申请该角色，然后由上级审批，该用户即可拥有该角色，不需要系统管理员手动授予。</li>
+</ul>
+<h3 id="3.%E8%A1%A8%E7%BB%93%E6%9E%84" tabindex="-1">3.表结构<a class="header-anchor" href="#3.%E8%A1%A8%E7%BB%93%E6%9E%84" aria-hidden="true"></a></h3>
+<p>有了上述的权限模型，设计表结构就不难了。下面是多系统下的表结构，简单设计下，主要提供思路：</p>
+<p><img src="//images.niemingzhao.top/image/2020/10/25/wu_1elfk56ue1gqep3v2j211n21noro.png-default" alt="" class="center-block"></p>
+<h3 id="4.%E6%9D%83%E9%99%90%E6%A1%86%E6%9E%B6" tabindex="-1">4.权限框架<a class="header-anchor" href="#4.%E6%9D%83%E9%99%90%E6%A1%86%E6%9E%B6" aria-hidden="true"></a></h3>
+<ul>
+<li>Apache Shrio</li>
+<li>Spring Security</li>
+</ul>
+<p>在项目中可以采用其中一种框架。</p>
+<h3 id="5.%E7%BB%93%E8%AF%AD" tabindex="-1">5.结语<a class="header-anchor" href="#5.%E7%BB%93%E8%AF%AD" aria-hidden="true"></a></h3>
+<p>权限系统可以说是整个系统中最基础，同时也可以很复杂的，在实际项目中，会遇到多个系统，多个用户类型，多个使用场景，这就需要具体问题具体分析，但最核心的RBAC模型是不变的，我们可以在其基础上进行扩展来满足需求。</p>
+<blockquote>
+<p>本文引用自<a target="_blank" rel="noopener" href="https://www.cnblogs.com/iceblow/">iceblow的博客</a>——<a target="_blank" rel="noopener" href="https://www.cnblogs.com/iceblow/p/11121362.html">可能是史上最全的权限系统设计</a>。</p>
+</blockquote>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/markdown-it-texmath/css/texmath.min.css">
+
+      
+        <div class="mdui-m-y-2 mdui-text-center">
+          <button class="mdui-fab mdui-color-deep-orange mdui-text-color-white mdui-ripple" mdui-dialog="{target: '#donate'}" mdui-tooltip="{content: '打赏', position: 'top'}"><i class="mdui-icon material-icons">thumb_up</i></button>
+        </div>
+      
+      <blockquote>
+        
+          <strong>本文遵循 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">CC BY-NC-SA 4.0</a> 许可协议</strong><br>
+        
+        <strong>本文链接：</strong><br><a href="https://www.niemingzhao.top/2020/10/25/%E6%9D%83%E9%99%90%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">https://www.niemingzhao.top/2020/10/25/权限系统设计/</a>
+      </blockquote>
+    </div>
+    <footer class="mdui-card-actions">
+      
+        <a class="mdui-ripple article_categories-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>
+      
+      
+        <a class="mdui-ripple article_tags-link" href="/tags/Java/" rel="tag">Java</a>
+      
+    </footer>
+    
+      <div class="mdui-dialog" id="donate">
+        <div class="mdui-tab mdui-tab-centered">
+          
+            <a href="#donate-0" class="mdui-ripple">支付宝</a>
+          
+            <a href="#donate-1" class="mdui-ripple">微信支付</a>
+          
+        </div>
+        
+        
+          <div id="donate-0" class="mdui-p-a-2 mdui-typo mdui-text-center">
+            
+              <img src="/images/alipay.jpg" style="width: 300px;">
+            
+          </div>
+        
+          <div id="donate-1" class="mdui-p-a-2 mdui-typo mdui-text-center">
+            
+              <img src="/images/wechat.jpg" style="width: 300px;">
+            
+          </div>
+        
+      </div>
+    
+  </article>
+  
+<script src="//cdn.bootcdn.net/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+  <script>$("#main article .mdui-card-content img.fancybox").on("click",function(e){$.fancybox.open({src:$(this).attr("src")});});</script>
+
+
+  <nav id="paginator">
+    
+    <div class="spacer"></div>
+    
+      <a rel="next" class="extend next" href="/2020/10/16/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%9130%E5%B9%B4%E5%8F%98%E8%BF%81%E5%8F%B2/">
+        <span class="mdui-p-x-3" mdui-tooltip="{content: '前端开发30年变迁史'}">下一篇</span>
+        <button aria-label="next" class="mdui-btn mdui-btn-raised mdui-btn-icon mdui-color-theme-accent mdui-ripple"><i class="mdui-icon material-icons">arrow_forward</i></button>
+      </a>
+    
+  </nav>
+
+
+  <div id="comment" class="mdui-m-t-5">
+    <div id="gitalk-container"></div>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script>
+  var gitalk = new Gitalk({
+    clientID: 'c3d07683889a30cce9f4',
+    clientSecret: '4075822d529574759bcaf8f1b55618cf6f1421f9',
+    repo: 'niemingzhao.github.io',
+    owner: 'niemingzhao',
+    admin: ['niemingzhao'],
+    id: 'da4af5ce-7cb4-12c6-a1f8-544d935343fa' || location.pathname,
+    distractionFreeMode: false
+  });
+  gitalk.render('gitalk-container');
+</script>
+
+  </div>
+
+
+
+  <div style="position: fixed !important; right: 16px; top: 30%;">
+    <button class="mdui-fab mdui-fab-mini mdui-ripple" mdui-menu="{target: '#toc'}"><i class="mdui-icon material-icons">toc</i></button>
+    <ul class="mdui-menu" id="toc">
+      <li class="mdui-menu-item" disabled><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1.%E6%9D%83%E9%99%90%E6%A8%A1%E5%9E%8B"><span class="toc-text">1.权限模型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1.1-rbac0%E6%A8%A1%E5%9E%8B"><span class="toc-text">1.1 RBAC0模型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1.2-rbac1%E6%A8%A1%E5%9E%8B"><span class="toc-text">1.2 RBAC1模型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1.3-rbac2%E6%A8%A1%E5%9E%8B"><span class="toc-text">1.3 RBAC2模型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1.4-rbac3%E6%A8%A1%E5%9E%8B"><span class="toc-text">1.4 RBAC3模型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1.5-%E7%94%A8%E6%88%B7%E7%BB%84"><span class="toc-text">1.5 用户组</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1.5.1-%E7%BB%84%E7%BB%87"><span class="toc-text">1.5.1 组织</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1.5.2-%E8%81%8C%E4%BD%8D"><span class="toc-text">1.5.2 职位</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1.6-%E5%90%AB%E6%9C%89%E7%BB%84%E7%BB%87/%E8%81%8C%E4%BD%8D/%E7%94%A8%E6%88%B7%E7%BB%84%E7%9A%84%E6%A8%A1%E5%9E%8B"><span class="toc-text">1.6 含有组织&#x2F;职位&#x2F;用户组的模型</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2.%E6%8E%88%E6%9D%83%E6%B5%81%E7%A8%8B"><span class="toc-text">2.授权流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3.%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="toc-text">3.表结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4.%E6%9D%83%E9%99%90%E6%A1%86%E6%9E%B6"><span class="toc-text">4.权限框架</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5.%E7%BB%93%E8%AF%AD"><span class="toc-text">5.结语</span></a></li></ol></li>
+    </ul>
+  </div>
+
+
+</main>
+  <footer id="footer" class="mdui-m-t-5 mdui-p-y-3 mdui-color-theme">
+  <div class="mdui-p-y-0 mdui-text-center">
+    
+    
+    
+    
+      <a href="https://weibo.com/2360828682/profile" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xec7e;</i></a>
+    
+    
+    
+    
+      <a href="https://github.com/niemingzhao" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe7ab;</i></a>
+    
+    
+    
+      <a href="https://www.zhihu.com/people/nie-1-58" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe6c0;</i></a>
+    
+    
+    
+      <a href="tencent://message/?uin=1432440963&Menu=yes" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe651;</i></a>
+    
+    
+  </div>
+  <div class="mdui-p-y-1 mdui-text-center">
+    Copyright &copy; 2016 - 2026 聂明照<br>
+    Powered by <a href="https://hexo.io/" target="_blank" class="mdui-text-color-theme-accent">Hexo</a> | Theme - <a href="https://github.com/niemingzhao/niemingzhao.github.io/tree/theme" target="_blank" class="mdui-text-color-theme-accent">default</a><br>京公网安备<a href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502053272" target="_blank" class="mdui-text-color-theme-accent">11010502053272</a>号 | 京ICP备<a href="https://beian.miit.gov.cn" target="_blank" class="mdui-text-color-theme-accent">2023020255</a>号
+    <br>
+      <span id="busuanzi_container_site_pv" style="display: none;"><i class="iconfont">&#xe7fd;</i> <span id="busuanzi_value_site_pv"></span></span> &nbsp;&nbsp;
+      <span id="busuanzi_container_site_uv" style="display: none;"><i class="iconfont">&#xe601;</i> <span id="busuanzi_value_site_uv"></span></span>
+    
+  </div>
+</footer>
+
+  <button id="gotop" class="mdui-fab mdui-fab-fixed mdui-fab-hide mdui-color-theme-accent mdui-ripple"><i class="mdui-icon material-icons">arrow_upward</i></button>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+<script src="/js/mdui.js"></script>
+<script src="/js/script.js"></script>
+
+  
+<script src="/custom.js"></script>
+
+</body>
+</html>

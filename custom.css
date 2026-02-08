@@ -1,0 +1,25 @@
+body {
+  background-color: #d4dcd6;
+}
+
+.gt-comment-body.markdown-body img {
+  max-width: 35% !important;
+}
+
+.mdui-typo a.header-anchor {
+  margin-left: 8px;
+}
+
+.mdui-typo a.header-anchor:after {
+  display: none;
+  content: "#";
+}
+
+.mdui-typo h1:hover a.header-anchor:after,
+.mdui-typo h2:hover a.header-anchor:after,
+.mdui-typo h3:hover a.header-anchor:after,
+.mdui-typo h4:hover a.header-anchor:after,
+.mdui-typo h5:hover a.header-anchor:after,
+.mdui-typo h6:hover a.header-anchor:after {
+  display: inline-block;
+}

@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="renderer" content="webkit">
+
+  
+  <title>Java Web架构发展 | 聂明照的博客</title>
+
+  <link rel="shortcut icon" href="/images/favicon.jpg">
+  <link rel="alternate" href="/atom.xml" title="聂明照的博客" type="application/atom+xml">
+  <meta name="description" content="前后端分离已成为互联网项目开发的业界标准使用方式，通过Nginx + Tomcat的方式（也可以中间加一个Node.js）有效的进行解耦，并且前后端分离会为以后的大型分布式架构、弹性计算架构、微服务架构、多端化服务（多种客户端，例如：浏览器，车载终端，安卓，iOS等等）打下坚实的基础。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java Web架构发展">
+<meta property="og:url" content="https://www.niemingzhao.top/2019/06/22/Java-Web%E6%9E%B6%E6%9E%84%E5%8F%91%E5%B1%95/index.html">
+<meta property="og:site_name" content="聂明照的博客">
+<meta property="og:description" content="前后端分离已成为互联网项目开发的业界标准使用方式，通过Nginx + Tomcat的方式（也可以中间加一个Node.js）有效的进行解耦，并且前后端分离会为以后的大型分布式架构、弹性计算架构、微服务架构、多端化服务（多种客户端，例如：浏览器，车载终端，安卓，iOS等等）打下坚实的基础。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-06-22T08:06:08.000Z">
+<meta property="article:modified_time" content="2026-02-08T11:30:13.899Z">
+<meta property="article:author" content="聂明照">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+
+  <meta name="keywords" content=",Java">
+  <meta name="format-detection" content="telephone=no,email=no">
+  <meta name="theme-color" content="#9C27B0">
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="聂明照的博客">
+  <meta name="msapplication-starturl" content="https://www.niemingzhao.top/2019/06/22/Java-Web%E6%9E%B6%E6%9E%84%E5%8F%91%E5%B1%95/">
+  <meta name="msapplication-navbutton-color" content="#9C27B0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="聂明照的博客">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="apple-touch-icon" href="/images/favicon.jpg">
+
+  
+    <link rel="canonical" href="https://www.niemingzhao.top/2019/06/22/Java-Web%E6%9E%B6%E6%9E%84%E5%8F%91%E5%B1%95/">
+  
+
+  <meta name="google-site-verification" content="fXjtlIfaDc_X-0P11rO3bEp1Nk4IKXphoJv0GqGZCco">
+  <meta name="baidu-site-verification" content="I3t1wfwZvd">
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create','UA-139531378-1','auto');ga('send','pageview');
+</script>
+
+  <script>
+  var _hmt = _hmt || [];
+  (function() {var hm = document.createElement('script');
+  hm.src = '//hm.baidu.com/hm.js?22e4d3b73c21ec2f0e1b4f3ff78c9a9c';
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+  
+
+  
+<link rel="stylesheet" href="/css/mdui.css">
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/custom.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="mdui-appbar-with-toolbar mdui-theme-primary-brown mdui-theme-accent-blue">
+  <script>var a=localStorage.getItem("mdui-theme-layout-dark");if(a){document.getElementsByTagName("body")[0].className+=" mdui-theme-layout-dark"};</script>
+  <script>if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){document.getElementsByTagName("body")[0].className+=" mdui-theme-layout-dark"};</script>
+  <script>var a=localStorage.getItem("mdui-drawer-close");if(!a){document.getElementsByTagName("body")[0].className+=" mdui-drawer-body-left"};</script>
+  <header id="header" class="mdui-appbar mdui-appbar-fixed mdui-appbar-scroll-hide mdui-appbar-inset">
+  <div class="mdui-toolbar mdui-color-theme">
+    <a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-drawer="{target: '#sidebar', swipe: true}"><i class="mdui-icon material-icons">menu</i></a>
+    <a href="/" class="mdui-typo-headline">聂明照的博客</a>
+    <div class="mdui-toolbar-spacer"></div>
+    <a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-dialog="{target: '#search'}" mdui-tooltip="{content: '搜索'}"><i class="mdui-icon material-icons">search</i></a>
+    <a href="/atom.xml" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: 'RSS'}"><i class="mdui-icon material-icons">rss_feed</i></a>
+  </div>
+</header>
+<div class="mdui-dialog" id="search">
+  
+    <div class="search-form">
+      <input type="search" class="search-form-input" placeholder="请输入关键字">
+    </div>
+    <div class="search-result" data-resource="/search.xml"></div>
+  
+</div>
+
+  <aside id="sidebar" class="mdui-drawer mdui-drawer-full-height">
+  <script>var a=localStorage.getItem("mdui-drawer-close");if(a){document.getElementById("sidebar").className+=" mdui-drawer-close"};</script>
+  <div class="mdui-grid-tile">
+    <img src="/images/banner.jpg" style="height: 160px;">
+    <img src="/images/avatar.jpg" class="avatar-animation" style="position: absolute; top: 10%; left: 24px; width: 64px; height: 64px; border: 2px solid #fff; border-radius: 50%;">
+    <div class="mdui-grid-tile-actions">
+      <div class="mdui-grid-tile-text">
+        <div class="mdui-grid-tile-title">聂明照</div>
+        <div class="mdui-grid-tile-subtitle"><i class="mdui-icon material-icons">art_track</i>桃李不言，下自成蹊</div>
+      </div>
+      
+        <div class="mdui-grid-tile-buttons">
+          <a href="mailto:1432440963@qq.com" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: '1432440963@qq.com'}"><i class="mdui-icon material-icons">email</i></a>
+        </div>
+      
+    </div>
+  </div>
+
+  <div class="mdui-list" mdui-collapse="{accordion: true}">
+    <a href="/" class="mdui-list-item mdui-ripple">
+      <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-blue">home</i>
+      <div class="mdui-list-item-content">主页</div>
+    </a>
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-0");if(a){document.getElementsByClassName("mdui-collapse-item")[0].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-deep-orange">archive</i>
+        <div class="mdui-list-item-content">归档</div>
+        <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        
+        <a class="mdui-ripple sidebar_archives-link" href="/archives/2020/10/">十月 2020<span class="mdui-ripple sidebar_archives-count">2</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2019/06/">六月 2019<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2019/01/">一月 2019<span class="mdui-ripple sidebar_archives-count">5</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2017/01/">一月 2017<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2016/10/">十月 2016<span class="mdui-ripple sidebar_archives-count">2</span></a><a class="mdui-ripple sidebar_archives-link" href="/archives/2016/08/">八月 2016<span class="mdui-ripple sidebar_archives-count">2</span></a>
+        
+      </div>
+    </div>
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-1");if(a){document.getElementsByClassName("mdui-collapse-item")[1].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-green">class</i>
+        <div class="mdui-list-item-content">分类</div>
+        <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        
+        <a class="mdui-ripple sidebar_archives-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术<span class="mdui-ripple sidebar_archives-count">9</span></a><a class="mdui-ripple sidebar_archives-link" href="/categories/%E6%96%87%E7%B2%B9/">文粹<span class="mdui-ripple sidebar_archives-count">2</span></a>
+        
+      </div>
+    </div>
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-2");if(a){document.getElementsByClassName("mdui-collapse-item")[2].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-brown">bookmark</i>
+        <div class="mdui-list-item-content">标签</div>
+        <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        
+        <a class="mdui-ripple sidebar_archives-link" href="/tags/Cloudflare/" rel="tag">Cloudflare<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Git/" rel="tag">Git<span class="mdui-ripple sidebar_archives-count">2</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/HomeLab/" rel="tag">HomeLab<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Java/" rel="tag">Java<span class="mdui-ripple sidebar_archives-count">2</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Markdown/" rel="tag">Markdown<span class="mdui-ripple sidebar_archives-count">3</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Self-Hosted/" rel="tag">Self-Hosted<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/Ubuntu/" rel="tag">Ubuntu<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端<span class="mdui-ripple sidebar_archives-count">1</span></a><a class="mdui-ripple sidebar_archives-link" href="/tags/%E5%8F%A4%E6%96%87/" rel="tag">古文<span class="mdui-ripple sidebar_archives-count">2</span></a>
+        
+      </div>
+    </div>
+    <a href="/about" class="mdui-list-item mdui-ripple">
+      <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-purple">person</i>
+      <div class="mdui-list-item-content">关于</div>
+    </a>
+  </div>
+
+  <div class="mdui-divider"></div>
+
+  <div class="mdui-list" mdui-collapse="{accordion: true}">
+    
+      <a href="/timeline" class="mdui-list-item mdui-ripple">时间轴</a>
+    
+      <a href="/tagcloud" class="mdui-list-item mdui-ripple">标签云</a>
+    
+      <a href="/gallery" class="mdui-list-item mdui-ripple">相册</a>
+    
+      <a href="/tv" class="mdui-list-item mdui-ripple">电视直播</a>
+    
+    <div class="mdui-collapse-item">
+      <script>var a=localStorage.getItem("mdui-collapse-item-3");if(a){document.getElementsByClassName("mdui-collapse-item")[3].className+=" mdui-collapse-item-open"};</script>
+      <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <div class="mdui-list-item-content">友情链接</div>
+        <i class="mdui-list-item-icon mdui-icon material-icons">link</i>
+      </div>
+      <div class="mdui-collapse-item-body mdui-list mdui-list-dense">
+        
+          <a href="//home.niemingzhao.top" target="_blank" class="mdui-list-item mdui-p-l-2 mdui-text-color-theme-accent mdui-ripple" style="justify-content: center;">自建服务导航</a>
+        
+        
+      </div>
+    </div>
+  </div>
+</aside>
+
+  <main id="main" class="mdui-m-t-5 fadeIn animated">
+  
+<link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
+
+  <style>#main article .mdui-card-content .center-block{display:block!important;margin-right:auto!important;margin-left:auto!important}</style>
+  <style>#main article .mdui-card-content .text-center{text-align:center!important}</style>
+  <article class="mdui-card mdui-m-b-5">
+    <header class="mdui-card-media">
+      <img src="/images/random/material-5.png" style="max-height: 240px;">
+      <div class="mdui-card-media-covered">
+        <div class="mdui-card-primary">
+          <div class="mdui-card-primary-title">Java Web架构发展</div>
+          <div class="mdui-card-primary-subtitle"><i class="iconfont">&#xe697;</i> 2019-06-22 / <i class="iconfont">&#xe601;</i> 聂明照 &nbsp;&nbsp; <span id="busuanzi_container_page_pv" style="display: none;"><i class="iconfont">&#xe7fd;</i> <span id="busuanzi_value_page_pv"></span></span></div>
+        </div>
+      </div>
+      <div class="mdui-card-menu">
+        
+          <button class="mdui-btn mdui-btn-icon mdui-text-color-white" mdui-menu="{target: '#qrcode', align: 'right'}"><i class="mdui-icon material-icons">devices</i></button>
+          <ul class="mdui-menu" id="qrcode">
+            
+              <li class="mdui-menu-item"><a class="mdui-text-center mdui-ripple">发送到手机</a></li>
+            
+            <li class="mdui-menu-item" disabled>
+              
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAAC2ElEQVR42u3bWW4bQQwFQN//0skBHMjvkQNH6q75EoRZWCPABBd//bny+MLGxsbGxsbGxsZ+S/ZXfLw+/x+PCb7Pn7uJGRsbG/sG9g9/+r8Fmlzbnpm/xDZmbGxs7HvYr5PWLAm9RuYxPBAzNjY2NvbLoPNXkySkH4oKbGxsbOz1LRLwpmE0+xmwsbGxsfMGTZ662uZRO2D4pV4aNjY29tuz20HvO3z+D/NtbGxs7Ldk1yuMi8IgbxLNhrvF8iU2Njb2Qey89Z+PfpNypS1OZoNnbGxs7BvYmwIgGdPmobdDgroVhY2NjX0oe7ZqMwsiHwnvr8XGxsa+k902bvblR1uctN9jY2Nj38Zui5NZmmkLj9mId7iphI2NjX0EO088+6Fv/sT81TxQgWFjY2N/IHtWNrRBPHtOPuLFxsbGvpPdpo388ZsWUlRytP89gI2Njf3h7E0xsElLTy1l5uUNNjY29g3s2XLkpjhJ2lv5KmcxHsDGxsY+lP3swGC/fDMbLWBjY2Pfxp6BZ42hNtzZoLcYD2BjY2MfxE7aRu3AddPib+8TFTbY2NjYh7Lbm85WMPPCpi0wikSLjY2NfSi7bbu3CSw/nhpR1BUYNjY29hHsTWGQHPmL3rSihmv02NjY2IeyZ5hNi79tWtUlEDY2Nvah7LxxM0st7SrPpoFVbyphY2NjH8R+trW0uVt752FTCRsbG/sgdrtwuW8V5SOBzUAiqsCwsbGxj2BvGkzt2s3snLyY+eEHw8bGxr6AnS/W5E2fWWrMSQ+MB7CxsbE/nN2mq00baBN6/jkaD2BjY2Mfx54lrSRdzQbD+fh5OOjFxsbGPpT9bBmQp5nNSyyixcbGxsYejWbbsW67cPlLCQwbGxv7OHZStGyaUG26igoqbGxs7AvYOSZJbPs0llxVLOVjY2NjH83eJ4xNAfM6nhxflyLY2NjYR7DvObCxsbGxsbGxsbHf5vgLFZIqXMSLWH0AAAAASUVORK5CYII=">
+              
+            </li>
+          </ul>
+        
+        
+          <button class="mdui-btn mdui-btn-icon mdui-text-color-white" mdui-menu="{target: '#share_menu', align: 'right'}"><i class="mdui-icon material-icons">share</i></button>
+          <ul class="mdui-menu" id="share_menu">
+            <li class="mdui-menu-item">
+              <a href="https://service.weibo.com/share/share.php?appkey=&title=Java Web架构发展&url=https://www.niemingzhao.top/2019/06/22/Java-Web%E6%9E%B6%E6%9E%84%E5%8F%91%E5%B1%95/&pic=https://www.niemingzhao.top/images/favicon.jpg&searchPic=false&style=simple" target="_blank" class="mdui-ripple">分享到 Weibo</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://twitter.com/intent/tweet?text=Java Web架构发展&url=https://www.niemingzhao.top/2019/06/22/Java-Web%E6%9E%B6%E6%9E%84%E5%8F%91%E5%B1%95/&via=聂明照" target="_blank" class="mdui-ripple">分享到 Twitter</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.niemingzhao.top/2019/06/22/Java-Web%E6%9E%B6%E6%9E%84%E5%8F%91%E5%B1%95/" target="_blank" class="mdui-ripple">分享到 Facebook</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://plus.google.com/share?url=https://www.niemingzhao.top/2019/06/22/Java-Web%E6%9E%B6%E6%9E%84%E5%8F%91%E5%B1%95/" target="_blank" class="mdui-ripple">分享到 Google+</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.niemingzhao.top/2019/06/22/Java-Web%E6%9E%B6%E6%9E%84%E5%8F%91%E5%B1%95/&title=Java Web架构发展" target="_blank" class="mdui-ripple">分享到 LinkedIn</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://connect.qq.com/widget/shareqq/index.html?site=聂明照的博客&title=Java Web架构发展&pics=https://www.niemingzhao.top/images/favicon.jpg&url=https://www.niemingzhao.top/2019/06/22/Java-Web%E6%9E%B6%E6%9E%84%E5%8F%91%E5%B1%95/" target="_blank" class="mdui-ripple">分享到 QQ</a>
+            </li>
+            <li class="mdui-menu-item">
+              <a href="https://telegram.me/share/url?url=https://www.niemingzhao.top/2019/06/22/Java-Web%E6%9E%B6%E6%9E%84%E5%8F%91%E5%B1%95/&text=Java Web架构发展" target="_blank" class="mdui-ripple">分享到 Telegram</a>
+            </li>
+          </ul>
+        
+      </div>
+    </header>
+    <div class="mdui-card-content mdui-typo">
+      <p>前后端分离已成为互联网项目开发的业界标准使用方式，通过Nginx + Tomcat的方式（也可以中间加一个Node.js）有效的进行解耦，并且前后端分离会为以后的大型分布式架构、弹性计算架构、微服务架构、多端化服务（多种客户端，例如：浏览器，车载终端，安卓，iOS等等）打下坚实的基础。</p>
+<span id="more"></span>
+<p>这个步骤是系统架构从猿进化成人的必经之路。</p>
+<p>核心思想是<strong>前端HTML页面通过Ajax调用后端的RESTful API接口并使用JSON数据进行交互</strong>。</p>
+<blockquote>
+<p>Web服务器：一般指像Nginx、Apache这类的服务器，他们一般只能解析静态资源。<br>
+应用服务器：一般指像Tomcat，Jetty，Resin这类的服务器可以解析动态资源也可以解析静态资源，但解析静态资源的能力没有Web服务器好。<br>
+一般都是只有Web服务器才能被外网访问，应用服务器只能内网访问。</p>
+</blockquote>
+<h3 id="%E6%9C%AF%E4%B8%9A%E6%9C%89%E4%B8%93%E6%94%BB%EF%BC%88%E5%BC%80%E5%8F%91%E4%BA%BA%E5%91%98%E5%88%86%E7%A6%BB%EF%BC%89" tabindex="-1">术业有专攻（开发人员分离）<a class="header-anchor" href="#%E6%9C%AF%E4%B8%9A%E6%9C%89%E4%B8%93%E6%94%BB%EF%BC%88%E5%BC%80%E5%8F%91%E4%BA%BA%E5%91%98%E5%88%86%E7%A6%BB%EF%BC%89" aria-hidden="true"></a></h3>
+<p>以前的Java Web项目大多数都是Java程序员又当爹又当妈，又搞前端（Ajax/jQuery/JS/HTML/CSS等等），又搞后端（Java/MySQL/Oracle等等）。</p>
+<p>随着时代的发展，渐渐的许多大中小公司开始把前后端的界限分的越来越明确，前端工程师只管前端的事情，后端工程师只管后端的事情。</p>
+<p>正所谓术业有专攻，一个人如果什么都会，那么他毕竟什么都不精。</p>
+<p>大中型公司需要专业人才，小公司需要全才，但是对于个人职业发展来说，我建议是分开。</p>
+<ul>
+<li>对于后端Java工程师：</li>
+</ul>
+<p>把精力放在Java基础、设计模式、JVM原理、Spring + SpringMVC原理及源码、Linux、MySQL事务隔离与锁机制、MongoDB、HTTP/TCP、多线程、分布式架构（Dubbo、DubboX、Spring Cloud）、弹性计算架构、微服务架构（SpringBoot + ZooKeeper + Docker + Jenkins）、Java性能优化以及相关的项目管理等等。</p>
+<p>后端追求的是：<em>三高（高并发、高可用、高性能），安全，存储，业务等等</em>。</p>
+<ul>
+<li>对于前端工程师：</li>
+</ul>
+<p>把精力放在HTML5、CSS3、jQuery、AngularJS、Bootstrap、ReactJS、VueJS、Webpack、Less/Sass、Gulp、Node.js、Google V8引擎、JavaScript多线程、模块化、面向切面编程、设计模式、浏览器兼容性、性能优化等等。</p>
+<p>前端追求的是：<em>页面表现，速度流畅，兼容性，用户体验等等</em>。</p>
+<p>术业有专攻，这样你的核心竞争力才会越来越高，正所谓你往生活中投入什么，生活就会反馈给你什么。并且两端的发展都越来越高深，你想什么都会，那你毕竟什么都不精。</p>
+<p>通过将Team分成前后端Team，让两边的工程师更加专注各自的领域，独立治理，然后构建出一个全栈式的精益求精的Team。</p>
+<h3 id="%E5%8E%9F%E5%A7%8B%E4%BA%BA%E6%97%B6%E4%BB%A3%EF%BC%88%E5%90%84%E7%A7%8D%E8%80%A6%E5%90%88%EF%BC%89" tabindex="-1">原始人时代（各种耦合）<a class="header-anchor" href="#%E5%8E%9F%E5%A7%8B%E4%BA%BA%E6%97%B6%E4%BB%A3%EF%BC%88%E5%90%84%E7%A7%8D%E8%80%A6%E5%90%88%EF%BC%89" aria-hidden="true"></a></h3>
+<p>曾几何时，我们的Java Web项目都是使用了若干后台框架，SpringMVC/Struts + Spring + SpringJDBC/Hibernate/MyBatis等等。</p>
+<p>大多数项目在Java后端都是分了三层——控制层（Controller/Action）、业务层（Service/Model）、持久层（Dao）。</p>
+<p>控制层负责接收参数，调用相关业务层，封装数据，以及路由&amp;渲染到JSP页面。然后，JSP页面上使用各种标签（JSTL/EL/Struts标签等）或者手写Java表达式（&lt;%= %&gt;）将后台的数据展现出来，玩的是MVC那套思路。</p>
+<p>我们先看这种情况：需求定完了，代码写完了，测试测完了，然后呢？要发布了吧？你需要用Maven或者Eclipse等工具把你的代码打成一个War包，然后把这个War包发布到你的生产环境下的Web容器（Tomcat/JBoss/WebLogic/WebSphere/Jetty/Resin）里，对吧？</p>
+<p>发布完了之后，你要启动你的Web容器，开始提供服务，这时候你通过配置域名、DNS等等相关，你的网站就可以访问了（假设你是个网站）。</p>
+<p>那我们来看，你的前后端代码是不是全都在那个War包里？包括你的JS、CSS、图片、各种第三方的库，对吧？</p>
+<p>好，下面在浏览器中输入你的网站域名（<a target="_blank" rel="noopener" href="http://www.xxx.com">www.xxx.com</a>），之后发生了什么？（这个问题也是很多公司的面试题）</p>
+<p>我捡干的说了啊，基础不好的童鞋请自己去搜。</p>
+<p>浏览器在通过域名通过DNS服务器找到你的服务器外网IP，将HTTP请求发送到你的服务器，在TCP 3次握手之后（HTTP下面是TCP/IP），通过TCP协议开始传输数据，你的服务器得到请求后，开始提供服务，接收参数，之后返回你的应答给浏览器，浏览器再通过Content-Type来解析你返回的内容，呈现给用户。</p>
+<p>那么我们来看，先假设你的首页中有100张图片，此时，用户看似一次的HTTP请求，其实并不是一次。用户在第一次访问的时候，浏览器中不会有缓存，你的100张图片，浏览器要连着发起100次HTTP请求（有人会跟我说HTTP长连短连的问题，不在这里讨论），你的服务器接收这些请求，都需要耗费内存去创建Socket来玩TCP传输（消耗你服务器上的计算资源）。</p>
+<p>重点来了，这样的话，你的服务器的压力会非常大，因为页面中的所有请求都是只请求到你这台服务器上，如果1个人还好，如果10000个人并发访问呢（先不聊服务器集群，这里就说单实例服务器），那你的服务器能扛住多少个TCP连接？你的带宽有多大？你的服务器的内存有多大？你的硬盘是高性能的吗？你能抗住多少IO？你给Web服务器分的内存有多大？会不会宕机？</p>
+<p>这就是为什么，<strong>越是大中型的Web应用，他们越是要解耦</strong>。</p>
+<p>理论上你可以把你的数据库 + 应用服务 + 消息队列 + 缓存 + 用户上传的文件 + 日志 + 等等都扔在一台服务器上，你也不用玩什么服务治理，也不用做什么性能监控，什么报警机制等等，就乱成一锅粥好了。</p>
+<p>但是这样就好像是你把鸡蛋都放在一个篮子里，隐患非常大。如果因为一个子应用的内存不稳定导致整个服务器内存溢出而<br>
+Hung住，那你的整个网站就挂掉了。</p>
+<p>如果出意外挂掉，而恰好这时你们的业务又处于井喷式发展高峰期，那么恭喜你，业务成功被技术卡住，很可能会流失大量用户，后果不堪设想。</p>
+<p><em>注意：技术一定是要走在业务前面的，否则你将错过最佳的发展期哟，亲~</em></p>
+<p>此外，你的应用全部都耦合在一起，相当于一个巨石，当服务端负载能力不足时，一般会使用<strong>负载均衡</strong>的方式，将服务器做成集群，这样其实你是在水平扩展一块块巨石，性能加速度会越来越低。要知道，本身负载就低的功能或者模块是没有必要水平扩展的。在本文中的例子就是你的性能瓶颈不在前端，那干嘛要水平扩展前端呢？？？还有发版部署上线的时候，我明明只改了后端的代码，为什么要前端也跟着发布呢？？？（引用自：《架构探险-轻量级微服务架构》，黄勇）</p>
+<p>正常的互联网架构，是都要拆开的，你的Web服务器集群，你的应用服务器集群 + 文件服务器集群 + 数据库服务器集群 + 消息队列集群 + 缓存集群等等。</p>
+<h3 id="jsp%E7%9A%84%E7%97%9B%E7%82%B9" tabindex="-1">JSP的痛点<a class="header-anchor" href="#jsp%E7%9A%84%E7%97%9B%E7%82%B9" aria-hidden="true"></a></h3>
+<p>以前的Java Web项目大多数使用JSP作为页面层展示数据给用户，因为流量不高，因此也没有那么苛刻的性能要求，但现在是大数据时代，对于互联网项目的性能要求是越来越高，因此原始的前后端耦合在一起的架构模式已经逐渐不能满足我们，我们需要寻找一种解耦的方式，来大幅度提升我们的负载能力。</p>
+<ol>
+<li>动态资源和静态资源全部耦合在一起，服务器压力大，因为服务器会收到各种HTTP请求，例如CSS的HTTP请求，JS的，图片的等等。一旦服务器出现状况，前后台一起玩完，用户体验极差。</li>
+<li>UI出好设计图后，前端工程师只负责将设计图切成HTML，需要由Java工程师来将HTML套成JSP页面，出错率较高（因为页面中经常会出现大量的JS代码），修改问题时需要双方协同开发，效率低下。</li>
+<li>JSP必须要在支持Java的Web服务器里运行（例如Tomcat，Jetty，Resin等），无法使用Nginx等（Nginx据说单实例HTTP并发高达5W，这个优势要用上），性能提不上来。</li>
+<li>第一次请求JSP，必须要在Web服务器中编译成Servlet，第一次运行会较慢。</li>
+<li>每次请求JSP都是访问Servlet再用输出流输出的HTML页面，效率没有直接使用HTML高（是每次哟，亲~）。</li>
+<li>JSP内有较多标签和表达式，前端工程师在修改页面时会捉襟见肘，遇到很多痛点。</li>
+<li>如果JSP中的内容很多，页面响应会很慢，因为是同步加载。</li>
+<li>需要前端工程师使用Java的IDE（例如Eclipse），以及需要配置各种后端的开发环境，你们有考虑过前端工程师的感受吗？</li>
+</ol>
+<p>基于上述的一些痛点，我们应该<strong>把整个项目的开发权重往前移，实现前后端真正的解耦！</strong></p>
+<h3 id="%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F" tabindex="-1">开发模式<a class="header-anchor" href="#%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F" aria-hidden="true"></a></h3>
+<p>以前老的方式是：</p>
+<ol>
+<li>产品经理/领导/客户提出需求</li>
+<li>UI做出设计图</li>
+<li>前端工程师做HTML页面</li>
+<li>后端工程师将HTML页面套成JSP页面（前后端强依赖，后端必须要等前端的HTML做好才能套JSP。如果HTML发生变更，就更痛了，开发效率低）</li>
+<li>集成出现问题</li>
+<li>前端返工</li>
+<li>后端返工</li>
+<li>二次集成</li>
+<li>集成成功</li>
+<li>交付</li>
+</ol>
+<p>新的方式是：</p>
+<ol>
+<li>产品经理/领导/客户提出需求</li>
+<li>UI做出设计图</li>
+<li>前后端约定接口&amp;数据&amp;参数</li>
+<li>前后端并行开发（无强依赖，可前后端并行开发，如果需求变更，只要接口&amp;参数不变，就不用两边都修改代码，开发效率高）</li>
+<li>前后端集成</li>
+<li>前端页面调整</li>
+<li>集成成功</li>
+<li>交付</li>
+</ol>
+<h3 id="%E8%AF%B7%E6%B1%82%E6%96%B9%E5%BC%8F" tabindex="-1">请求方式<a class="header-anchor" href="#%E8%AF%B7%E6%B1%82%E6%96%B9%E5%BC%8F" aria-hidden="true"></a></h3>
+<p>以前老的方式是：</p>
+<ol>
+<li>客户端请求</li>
+<li>服务端的Servlet或Controller接收请求（后端控制路由&amp;渲染页面，整个项目开发的权重大部分在后端）</li>
+<li>调用Service，Dao代码完成业务逻辑</li>
+<li>返回JSP</li>
+<li>JSP展现一些动态的代码</li>
+</ol>
+<p>新的方式是：</p>
+<ol>
+<li>浏览器发送请求</li>
+<li>直接到达HTML页面（前端控制路由&amp;渲染页面，整个项目开发的权重前移）</li>
+<li>HTML页面负责调用服务端接口产生数据（通过Ajax等等，后台返回JSON格式数据，JSON数据格式因为简洁高效而取代XML）</li>
+<li>填充HTML，展现动态效果，在页面上进行解析并操作DOM。</li>
+</ol>
+<p>（有兴趣的童鞋可以访问一下阿里巴巴等大型网站，然后按一下F12，监控一下你刷新一次页面，他的HTTP是怎么玩的，大多数都是单独请求后台数据，使用JSON传输数据，而不是一个大而全的HTTP请求把整个页面包括动 + 静全部返回过来）</p>
+<p>总结一下新的方式的请求步骤：</p>
+<p>大量并发浏览器请求 —&gt; Web服务器集群(Nginx) —&gt; 应用服务器集群(Tomcat) —&gt; 文件/数据库/缓存/消息队列服务器集群</p>
+<p>同时又可以分模块，还可以按业务拆成一个个的小集群，为后面的架构升级做准备。</p>
+<h3 id="%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB%E7%9A%84%E4%BC%98%E5%8A%BF" tabindex="-1">前后端分离的优势<a class="header-anchor" href="#%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB%E7%9A%84%E4%BC%98%E5%8A%BF" aria-hidden="true"></a></h3>
+<ol>
+<li>可以实现真正的前后端解耦，前端服务器使用Nginx。</li>
+</ol>
+<p>前端/Web服务器放的是CSS、JS、图片等等一系列静态资源（甚至你还可以把CSS、JS、图片等资源放到特定的文件服务器，例如阿里云的OSS，并使用CDN加速），前端服务器负责控制页面引用&amp;跳转&amp;路由，前端页面异步调用后端的接口，后端/应用服务器使用Tomcat（把Tomcat想象成一个数据提供者），加快整体响应速度。</p>
+<p>（这里需要使用一些前端工程化的框架比如Node.js、ReactJS、Router、Redux、Gulp、Webpack）</p>
+<ol start="2">
+<li>发现bug，可以快速定位是谁的问题，不会出现互相踢皮球的现象。</li>
+</ol>
+<p>页面逻辑、跳转错误、浏览器兼容性问题、脚本错误、页面样式等问题，全部由前端工程师来负责。接口数据出错、数据没有提交成功、应答超时等问题，全部由后端工程师来解决。双方互不干扰，前端与后端是相亲相爱的一家人。</p>
+<ol start="3">
+<li>在大并发情况下，可以同时水平扩展前后端服务器。</li>
+</ol>
+<p>比如淘宝的一个首页就需要2000+台前端服务器做集群来抗住日均多少亿+的日均PV。去参加阿里的技术峰会，听他们说他们的Web容器都是自己写的，就算他单实例抗10万HTTP并发，2000台是2亿HTTP并发，并且他们还可以根据预知洪峰来无限拓展，很恐怖，就一个首页。</p>
+<ol start="4">
+<li>减少后端服务器的并发/负载压力</li>
+</ol>
+<p>除了接口以外的其他所有HTTP请求全部转移到前端Nginx上，接口的请求调用Tomcat，参考Nginx反向代理Tomcat。且除了第一次页面请求外，浏览器会大量调用本地缓存。</p>
+<ol start="5">
+<li>
+<p>即使后端服务器暂时超时或者宕机了，前端页面也会正常访问，只不过数据刷不出来而已。</p>
+</li>
+<li>
+<p>也许你也需要有微信相关的轻应用，那样你的接口完全可以共用，如果也有App相关的服务，那么只要通过一些代码重构，也可以大量复用接口，提升效率。（多端应用）</p>
+</li>
+<li>
+<p>页面显示的东西再多也不怕，因为是异步加载。</p>
+</li>
+<li>
+<p>Nginx支持页面热部署，不用重启服务器，前端升级更无缝。</p>
+</li>
+<li>
+<p>增加代码的维护性&amp;易读性（前后端耦合在一起的代码读起来相当费劲）。</p>
+</li>
+<li>
+<p>提升开发效率，因为可以前后端并行开发，而不是像以前的强依赖。</p>
+</li>
+<li>
+<p>在Nginx中部署证书，外网使用HTTPS访问，并且只开放443和80端口，其他端口一律关闭（防止黑客端口扫描），内网使用HTTP，性能和安全都有保障。</p>
+</li>
+<li>
+<p>前端大量的组件代码得以复用，组件化，提升开发效率，抽出来！</p>
+</li>
+</ol>
+<h3 id="%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9" tabindex="-1">注意事项<a class="header-anchor" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9" aria-hidden="true"></a></h3>
+<ol>
+<li>在开需求会议的时候，前后端工程师必须全部参加，并且需要制定好接口文档，后端工程师要写好测试用例（2个维度），不要让前端工程师充当你的专职测试，推荐使用Chrome的插件Postman或SoapUI或Jmeter，Service层的测试用例拿JUnit写。PS：前端也可以玩单元测试吗？</li>
+<li>上述的接口并不是Java里的interface，说白了调用接口就是调用你Controller里的方法。</li>
+<li>加重了前端团队的工作量，减轻了后端团队的工作量，提高了性能和可扩展性。</li>
+<li>我们需要一些前端的框架来解决类似于页面嵌套，分页，页面跳转控制等功能。（上面提到的那些前端框架）</li>
+<li>如果你的项目很小，或者是一个单纯的内网项目，那你大可放心，不需要任何架构，但是如果你的项目是外网项目，呵呵哒。</li>
+<li>以前还有人在使用类似于Velocity/FreeMarker等模板框架来生成静态页面，仁者见仁智者见智。</li>
+<li>这篇文章主要的目的是说JSP在大型外网Java Web项目中被淘汰掉，可没说JSP可以完全不学，对于一些学生朋友来说，JSP/Servlet等相关的Java Web基础还是要掌握牢的，不然你以为SpringMVC这种框架是基于什么来写的？</li>
+<li>如果页面上有一些权限等等相关的校验，那么这些相关的数据也可以通过Ajax从接口里拿。<strong>类似于数据校验这种，前后端都需要做！</strong></li>
+<li>对于既可以前端做也可以后端做的逻辑，我建议是放到前端，为什么？因为你的逻辑需要计算资源进行计算，如果放到后端去run逻辑，则会消耗带宽&amp;内存&amp;CPU等等计算资源，你要记住一点就是：<strong>服务端的计算资源是有限的</strong>，而如果放到前端，使用的是客户端的计算资源，这样你的服务端负载就会下降（高并发场景）。</li>
+<li>前端需要有机制应对后端请求超时以及后端服务器宕机的情况，友好的展示给用户。</li>
+</ol>
+<h3 id="%E6%89%A9%E5%B1%95%E9%98%85%E8%AF%BB" tabindex="-1">扩展阅读<a class="header-anchor" href="#%E6%89%A9%E5%B1%95%E9%98%85%E8%AF%BB" aria-hidden="true"></a></h3>
+<ol>
+<li>其实对于JS、CSS、图片这类的静态资源可以考虑放到类似于阿里云的OSS这类文件服务器上（如果是普通的服务器&amp;操作系统，存储在到达PB级的文件后，或者单个文件夹内的文件数量达到3-5万，IO会有很严重的性能问题），再在OSS上配CDN（全国子节点加速），这样无论你在全国的哪个地方，你页面打开的速度像飞一样，并且你的Nginx的负载会进一步降低。</li>
+<li>如果你要玩轻量级微服务架构，要使用Node.js做网关，用Node.js的好处还有利于SEO优化，因为Nginx只是向浏览器返回页面静态资源，而国内的搜索引擎爬虫只会抓取静态数据，不会解析页面中的JS，这使得Web应用得不到良好的搜索引擎支持。同时因为Nginx不会进行页面的组装渲染，需要把静态页面返回到浏览器，然后完成渲染工作，这加重了浏览器的渲染负担。浏览器发起的请求经过Nginx进行分发，URL请求统一分发到Node.js，在Node.js中进行页面组装渲染；API请求则直接发送到后端服务器，完成响应。</li>
+<li>如果遇到跨域问题，Spring4的CORS可以完美解决，但一般使用Nginx反向代理都不会有跨域问题，除非你把前端服务和后端服务分成两个域名。<em>JSONP的方式也被淘汰掉了。</em></li>
+<li>如果想玩多端应用，注意要去掉Tomcat原生的Session机制，要使用Token机制，使用缓存（因为是分布式系统），做单点，对于Token机制的安全性问题，可以搜一下JWT。</li>
+<li>前端项目中可以加入Mock测试（构造虚拟测试对象来模拟后端，可以独立开发和测试），后端需要有详细的测试用例，保证服务的可用性与稳定性。</li>
+</ol>
+<h3 id="%E6%80%BB%E7%BB%93" tabindex="-1">总结<a class="header-anchor" href="#%E6%80%BB%E7%BB%93" aria-hidden="true"></a></h3>
+<p>前后端分离并非仅仅只是一种开发模式，而是一种架构模式（前后端分离架构）。</p>
+<p>千万不要以为只有在撸代码的时候把前端和后端分开就是前后端分离了。需要区分前后端项目。前端项目与后端项目是两个项目，放在两个不同的服务器，需要独立部署，两个不同的工程，两个不同的代码库，不同的开发人员。</p>
+<p>前后端工程师需要约定交互接口，实现并行开发，开发结束后需要进行独立部署，前端通过Ajax来调用HTTP请求调用后端的RESTful API。</p>
+<p>前端只需要关注页面的样式与动态数据的解析&amp;渲染，而后端专注于具体业务逻辑。</p>
+<blockquote>
+<p>本文引用自<a target="_blank" rel="noopener" href="https://www.cnblogs.com/z00377750/">风动静泉的博客</a>——<a target="_blank" rel="noopener" href="https://www.cnblogs.com/z00377750/p/9136385.html">JavaWeb架构发展</a>。如有侵权，请留言告知，及时撤除。</p>
+</blockquote>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/markdown-it-texmath/css/texmath.min.css">
+
+      
+        <div class="mdui-m-y-2 mdui-text-center">
+          <button class="mdui-fab mdui-color-deep-orange mdui-text-color-white mdui-ripple" mdui-dialog="{target: '#donate'}" mdui-tooltip="{content: '打赏', position: 'top'}"><i class="mdui-icon material-icons">thumb_up</i></button>
+        </div>
+      
+      <blockquote>
+        
+          <strong>本文遵循 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">CC BY-NC-SA 4.0</a> 许可协议</strong><br>
+        
+        <strong>本文链接：</strong><br><a href="https://www.niemingzhao.top/2019/06/22/Java-Web%E6%9E%B6%E6%9E%84%E5%8F%91%E5%B1%95/">https://www.niemingzhao.top/2019/06/22/Java-Web架构发展/</a>
+      </blockquote>
+    </div>
+    <footer class="mdui-card-actions">
+      
+        <a class="mdui-ripple article_categories-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>
+      
+      
+        <a class="mdui-ripple article_tags-link" href="/tags/Java/" rel="tag">Java</a>
+      
+    </footer>
+    
+      <div class="mdui-dialog" id="donate">
+        <div class="mdui-tab mdui-tab-centered">
+          
+            <a href="#donate-0" class="mdui-ripple">支付宝</a>
+          
+            <a href="#donate-1" class="mdui-ripple">微信支付</a>
+          
+        </div>
+        
+        
+          <div id="donate-0" class="mdui-p-a-2 mdui-typo mdui-text-center">
+            
+              <img src="/images/alipay.jpg" style="width: 300px;">
+            
+          </div>
+        
+          <div id="donate-1" class="mdui-p-a-2 mdui-typo mdui-text-center">
+            
+              <img src="/images/wechat.jpg" style="width: 300px;">
+            
+          </div>
+        
+      </div>
+    
+  </article>
+  
+<script src="//cdn.bootcdn.net/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+  <script>$("#main article .mdui-card-content img.fancybox").on("click",function(e){$.fancybox.open({src:$(this).attr("src")});});</script>
+
+
+  <nav id="paginator">
+    
+      <a rel="prev" class="extend prev" href="/2020/10/16/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%9130%E5%B9%B4%E5%8F%98%E8%BF%81%E5%8F%B2/">
+        <button aria-label="prev" class="mdui-btn mdui-btn-raised mdui-btn-icon mdui-color-theme-accent mdui-ripple"><i class="mdui-icon material-icons">arrow_back</i></button>
+        <span class="mdui-p-x-3" mdui-tooltip="{content: '前端开发30年变迁史'}">上一篇</span>
+      </a>
+    
+    <div class="spacer"></div>
+    
+      <a rel="next" class="extend next" href="/2019/01/01/Markdown%E6%B5%8B%E8%AF%95%E9%A1%B5/">
+        <span class="mdui-p-x-3" mdui-tooltip="{content: 'Markdown测试页'}">下一篇</span>
+        <button aria-label="next" class="mdui-btn mdui-btn-raised mdui-btn-icon mdui-color-theme-accent mdui-ripple"><i class="mdui-icon material-icons">arrow_forward</i></button>
+      </a>
+    
+  </nav>
+
+
+  <div id="comment" class="mdui-m-t-5">
+    <div id="gitalk-container"></div>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script>
+  var gitalk = new Gitalk({
+    clientID: 'c3d07683889a30cce9f4',
+    clientSecret: '4075822d529574759bcaf8f1b55618cf6f1421f9',
+    repo: 'niemingzhao.github.io',
+    owner: 'niemingzhao',
+    admin: ['niemingzhao'],
+    id: 'b709d091-2a77-11ea-a744-1f4d64ae768d' || location.pathname,
+    distractionFreeMode: false
+  });
+  gitalk.render('gitalk-container');
+</script>
+
+  </div>
+
+
+
+  <div style="position: fixed !important; right: 16px; top: 30%;">
+    <button class="mdui-fab mdui-fab-mini mdui-ripple" mdui-menu="{target: '#toc'}"><i class="mdui-icon material-icons">toc</i></button>
+    <ul class="mdui-menu" id="toc">
+      <li class="mdui-menu-item" disabled><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AF%E4%B8%9A%E6%9C%89%E4%B8%93%E6%94%BB%EF%BC%88%E5%BC%80%E5%8F%91%E4%BA%BA%E5%91%98%E5%88%86%E7%A6%BB%EF%BC%89"><span class="toc-text">术业有专攻（开发人员分离）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E5%A7%8B%E4%BA%BA%E6%97%B6%E4%BB%A3%EF%BC%88%E5%90%84%E7%A7%8D%E8%80%A6%E5%90%88%EF%BC%89"><span class="toc-text">原始人时代（各种耦合）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#jsp%E7%9A%84%E7%97%9B%E7%82%B9"><span class="toc-text">JSP的痛点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F"><span class="toc-text">开发模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%B7%E6%B1%82%E6%96%B9%E5%BC%8F"><span class="toc-text">请求方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-text">前后端分离的优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">注意事项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A9%E5%B1%95%E9%98%85%E8%AF%BB"><span class="toc-text">扩展阅读</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li>
+    </ul>
+  </div>
+
+
+</main>
+  <footer id="footer" class="mdui-m-t-5 mdui-p-y-3 mdui-color-theme">
+  <div class="mdui-p-y-0 mdui-text-center">
+    
+    
+    
+    
+      <a href="https://weibo.com/2360828682/profile" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xec7e;</i></a>
+    
+    
+    
+    
+      <a href="https://github.com/niemingzhao" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe7ab;</i></a>
+    
+    
+    
+      <a href="https://www.zhihu.com/people/nie-1-58" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe6c0;</i></a>
+    
+    
+    
+      <a href="tencent://message/?uin=1432440963&Menu=yes" target="_blank" class="mdui-btn mdui-btn-icon mdui-text-color-theme-a100"><i class="mdui-icon iconfont">&#xe651;</i></a>
+    
+    
+  </div>
+  <div class="mdui-p-y-1 mdui-text-center">
+    Copyright &copy; 2016 - 2026 聂明照<br>
+    Powered by <a href="https://hexo.io/" target="_blank" class="mdui-text-color-theme-accent">Hexo</a> | Theme - <a href="https://github.com/niemingzhao/niemingzhao.github.io/tree/theme" target="_blank" class="mdui-text-color-theme-accent">default</a><br>京公网安备<a href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502053272" target="_blank" class="mdui-text-color-theme-accent">11010502053272</a>号 | 京ICP备<a href="https://beian.miit.gov.cn" target="_blank" class="mdui-text-color-theme-accent">2023020255</a>号
+    <br>
+      <span id="busuanzi_container_site_pv" style="display: none;"><i class="iconfont">&#xe7fd;</i> <span id="busuanzi_value_site_pv"></span></span> &nbsp;&nbsp;
+      <span id="busuanzi_container_site_uv" style="display: none;"><i class="iconfont">&#xe601;</i> <span id="busuanzi_value_site_uv"></span></span>
+    
+  </div>
+</footer>
+
+  <button id="gotop" class="mdui-fab mdui-fab-fixed mdui-fab-hide mdui-color-theme-accent mdui-ripple"><i class="mdui-icon material-icons">arrow_upward</i></button>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+<script src="/js/mdui.js"></script>
+<script src="/js/script.js"></script>
+
+  
+<script src="/custom.js"></script>
+
+</body>
+</html>
